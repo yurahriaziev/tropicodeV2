@@ -9,7 +9,7 @@ export default function Hero() {
                 <div className="md:w-1/2 text-white mb-10 md:mb-0">
                 <h1 className="text-4xl md:text-5xl font-bold mb-4">Level Up Your Tech Skills with Tropicode</h1>
                 <p className="text-lg md:text-xl mb-8">
-                    Empowering young minds to master programming, game development, VR, and 3D printing in a fun and
+                    Empowering young minds to master programming, website development and 3D printing in a fun and
                     engaging environment.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
