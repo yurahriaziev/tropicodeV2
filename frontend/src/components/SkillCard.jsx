@@ -1,14 +1,19 @@
 import { FaAngleRight } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 export default function SkillCard({ title, description, icon, topics = [], link = "#" }) {
-    return (
-        <div className="rounded-xl border border-purple-200 shadow-sm hover:shadow-md transition overflow-hidden">
-      {/* Top icon bar */}
+  const navigate = useNavigate();
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  }
+
+  return (
+      <div className="rounded-xl border border-purple-200 shadow-sm hover:shadow-md transition overflow-hidden">
       <div className="bg-purple-50 py-6 flex justify-center text-3xl text-purple-600">
         {icon}
       </div>
 
-      {/* Content */}
       <div className="p-6 flex flex-col gap-5 text-gray-800">
         <div>
           <h3 className="text-xl font-bold mb-1">{title}</h3>
@@ -26,13 +31,13 @@ export default function SkillCard({ title, description, icon, topics = [], link 
 
         <div className='p-5'>
           <a
-            href={link}
-            className="flex items-center text-purple-600 font-semibold text-sm hover:underline"
+            onClick={() => handleNavigate(link)}
+            className="cursor-pointer flex items-center text-purple-600 font-semibold text-sm hover:underline"
           >
             Learn More <FaAngleRight className="ml-1 text-xs" />
           </a>
         </div>
       </div>
     </div>
-    )
+  )
 }

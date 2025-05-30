@@ -85,9 +85,9 @@ export default function LoginCard() {
                             </label>
                             <a href="#" className="text-purple-600 hover:underline">Forgot password?</a>
                         </div>
-                        <p className="text-center text-sm text-gray-600 mt-6">
+                        {/* <p className="text-center text-sm text-gray-600 mt-6">
                         Don't have an account? <a href="#" className="text-purple-600 hover:underline">Sign up here</a>
-                        </p>
+                        </p> */}
                     </>
                 )}
 
@@ -104,14 +104,16 @@ export default function LoginCard() {
             {/* Right Side - Info Panel */}
             <div className="hidden md:flex w-1/2 flex-col justify-center items-center text-white p-10 bg-gradient-to-br from-purple-600 to-green-500">
                 <div className="max-w-sm text-center">
-                <div className="text-4xl mb-4">{isStudent ? <FaUserGraduate /> : <FaUserFriends />}</div>
-                <h2 className="text-2xl font-bold mb-2">{info[accountType].title}</h2>
-                <p className="mb-4 text-sm text-purple-100">{info[accountType].description}</p>
-                <ul className="text-sm text-purple-100 space-y-1">
+                    <div className="text-4xl mb-4 flex justify-center">
+                    {isStudent ? <FaUserGraduate /> : <FaUserFriends />}
+                    </div>
+                    <h2 className="text-2xl font-bold mb-2">{info[accountType].title}</h2>
+                    <p className="mb-4 text-sm text-purple-100">{info[accountType].description}</p>
+                    <ul className="text-sm text-purple-100 space-y-1">
                     {info[accountType].bullets.map((item, idx) => (
-                    <li key={idx}>• {item}</li>
+                        <li key={idx}>• {item}</li>
                     ))}
-                </ul>
+                    </ul>
                 </div>
             </div>
         </div>

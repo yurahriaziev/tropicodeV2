@@ -26,7 +26,7 @@ export default function Hero() {
                     <img
                         src="/images/purple-mascot.png"
                         alt="Tropicode mascot"
-                        className="object-contain h-full w-full rounded-2xl drop-shadow-lg -scale-x-100"
+                        className="object-contain h-full w-full rounded-2xl drop-shadow-lg -scale-x-100 animate-float"
                     />
                 </div>
                 </div>

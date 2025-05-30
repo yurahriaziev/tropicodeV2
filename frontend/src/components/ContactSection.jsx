@@ -5,7 +5,7 @@ export default function ContactSection() {
                 <div className="bg-white rounded-xl shadow-lg p-8 md:p-10">
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-extrabold text-gray-800">
-                    Request <span className="text-purple-600">Info</span>
+                        Connect With <span className="text-purple-600">Us</span>
                     </h2>
                 </div>
 
