@@ -23,7 +23,7 @@ export default function Navbar() {
             </ul>
 
             <div className="flex gap-4">
-                <button onClick={() => handleNavigate('/login')} className="px-4 py-1 border border-purple-600 text-purple-600 rounded hover:bg-purple-50">Log In</button>
+                <button onClick={() => handleNavigate('/login')} className="cursor-pointer px-4 py-1 border border-purple-600 text-purple-600 rounded hover:bg-purple-600 hover:text-white transition-colors duration-300">Log In</button>
                 {/* <button className="px-4 py-1 bg-purple-600 text-white rounded hover:bg-purple-700">Sign Up</button> */}
             </div>
         </nav>
