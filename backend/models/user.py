@@ -26,7 +26,7 @@ class Parent(Base):
     last = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     phone_number = Column(String, nullable=True)
-    student_ids = Column(ARRAY(UUID(as_uuid=True), default=[]))
+    student_ids = Column(ARRAY(UUID(as_uuid=True)), default=[])
 
     user = relationship('User', back_populates='parent')
     students = relationship('Student', back_populates='parent')
@@ -36,10 +36,10 @@ class Student(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     parent_id = Column(UUID(as_uuid=True), ForeignKey('parents.id'), nullable=False)
-    firs = Column(String, nullable=False)
+    first = Column(String, nullable=False)
     last = Column(String, nullable=False)
     age = Column(Integer, nullable=False)
     login_code = Column(String(4), unique=True, nullable=False)
-    course_ids = Column(ARRAY(UUID(as_uuid=True), default=[]))
+    course_ids = Column(ARRAY(UUID(as_uuid=True)), default=[])
     
     parent = relationship('Parent', back_populates='students')
