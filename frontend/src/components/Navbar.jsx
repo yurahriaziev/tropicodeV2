@@ -18,7 +18,7 @@ export default function Navbar() {
             <ul className="flex gap-6 text-sm font-medium text-gray-700">
                 <li><a onClick={() => handleNavigate('/home')} className="cursor-pointer hover:text-purple-600">Home</a></li>
                 <li><a onClick={() => handleNavigate('/home#courses')} href="#courses" className="cursor-pointer hover:text-purple-600">Courses</a></li>
-                <li><a href="#about" className="cursor-pointer hover:text-purple-600">About</a></li>
+                {/* <li><a href="#about" className="cursor-pointer hover:text-purple-600">About</a></li> */}
                 <li><a href="#contact" className="cursor-pointer hover:text-purple-600">Contact</a></li>
             </ul>
 

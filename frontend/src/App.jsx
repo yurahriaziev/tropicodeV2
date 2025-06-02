@@ -12,7 +12,7 @@ export default function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/island" element={<StudentIsland />} />
-        <Route path="/course" element={<CoursePage />} />
+        <Route path="/course/:courseName" element={<CoursePage />} />
       </Routes>
     </Router>
     

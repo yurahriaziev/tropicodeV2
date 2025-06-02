@@ -19,21 +19,21 @@ export default function SkillSection() {
                         description="Learn Python, JavaScript, and coding fundamentals through interactive projects."
                         icon={<span className="text-3xl">{<FaCode />}</span>}
                         topics={['Python', 'JavaScript', 'Logic & Algorithms']}
-                        link="/course"
+                        link="/course/programming"
                     />
                     <SkillCard
                         title="ReactJS Web Development"
                         description="Build modern websites using ReactJS and Python to handle backend logic."
                         icon={<span className="text-3xl">{<FaLaptopCode />}</span>}
                         topics={['Python', 'JavaScript', 'Backend']}
-                        link="/course"
+                        link="/course/reactjs-web-development"
                     />
                     <SkillCard
                         title="3D Printing & Design"
                         description="Create and print 3D models using Tinkercad and other design tools."
                         icon={<span className="text-3xl">{<FaCubes />}</span>}
                         topics={['Tinkercad', '3D Modeling', 'Printing']}
-                        link="/course"
+                        link="/course/3d-printing-design"
                     />
                     {/* <SkillCard
                         title="Programming"
