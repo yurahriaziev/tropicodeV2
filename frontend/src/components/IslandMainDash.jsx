@@ -2,7 +2,7 @@ import WelcomeBanner from "./WelcomeBanner";
 
 export default function IslandMainDash() {
     const mockStudentData = {
-        name: "Alex",
+        name: "Brandon",
         email: "alex.johnson@email.com",
         grade: "8th Grade",
         joinDate: "September 2024",

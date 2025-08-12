@@ -33,7 +33,7 @@ export default function ContactSection() {
                     />
 
                     {/* Child info */}
-                    <input
+                    {/* <input
                     type="text"
                     placeholder="Child First Name"
                     className="w-full bg-blue-50 p-3 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -42,7 +42,7 @@ export default function ContactSection() {
                     type="text"
                     placeholder="Child Last Name"
                     className="w-full bg-blue-50 p-3 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
+                    /> */}
 
                     {/* Submit button */}
                     <div className="pt-4">
