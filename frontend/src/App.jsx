@@ -14,7 +14,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/island" element={<StudentIsland />} />
         <Route path="/course/:courseName" element={<CoursePage />} />
-        <Route path="/tp-admin" element={<AdminPage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </Router>
     
