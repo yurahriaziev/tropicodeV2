@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from db.session import engine, Base
 from datetime import datetime, timezone
-from api import users
+from api import users, auth
 
 import models
 from schemas import ServerStatus
 
 app = FastAPI(title="TropicodeAPI")
 app.include_router(users.router)
+app.include_router(auth.router)
 
 Base.metadata.create_all(bind=engine)
 

@@ -7,6 +7,7 @@ from typing import List
 from db.session import SessionLocal, engine
 from models.user import User, UserRole
 import schemas
+from core.security import get_password_hash
 
 router = APIRouter()
 
@@ -29,7 +30,6 @@ def create_user(user:schemas.UserCreate, db: Session = Depends(get_db)):
     if user.role in [UserRole.ADMIN, UserRole.TUTOR]:
         if not user.email or not user.password:
             raise HTTPException(status_code=400, detail="Email and password are required")
-        hashed_p = user.password + '_not_hashed'
 
     login_code = None
     if user.role == UserRole.STUDENT:
@@ -38,6 +38,8 @@ def create_user(user:schemas.UserCreate, db: Session = Depends(get_db)):
             if not db.query(User).filter(User.login_code == code).first():
                 login_code = code
                 break
+
+    hashed_p = get_password_hash(user.password)
 
     db_user = User(
         first=user.first,

@@ -25,6 +25,7 @@ class UserOut(BaseModel):
     email: Optional[EmailStr] = None
     login_code: Optional[str] = None
     is_active: bool
+    hashed_password: Optional[str] = None
 
     class Config:
         orm_mode = True
@@ -32,3 +33,7 @@ class UserOut(BaseModel):
 class ServerStatus(BaseModel):
     status: str
     timestamp: datetime
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
