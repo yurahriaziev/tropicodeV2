@@ -2,11 +2,19 @@ from fastapi import FastAPI
 from db.session import engine, Base
 from datetime import datetime, timezone
 from api import users, auth
+from fastapi.middleware.cors import CORSMiddleware
 
-import models
 from schemas import ServerStatus
+from core.config import origins
 
 app = FastAPI(title="TropicodeAPI")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
 app.include_router(users.router)
 app.include_router(auth.router)
 
