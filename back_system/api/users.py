@@ -8,6 +8,7 @@ from db.session import SessionLocal, engine
 from models.user import User, UserRole
 import schemas
 from core.security import get_password_hash
+from .auth import get_current_user
 
 router = APIRouter()
 
@@ -63,3 +64,7 @@ def get_users(db: Session=Depends(get_db)):
     '''
     users = db.query(User).all()
     return users
+
+@router.get('/users/me', response_model=schemas.UserOut, tags=['Users'])
+def me(user:User = Depends(get_current_user)):
+    return user
