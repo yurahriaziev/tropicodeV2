@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import StudentIsland from "./pages/StudentIsland";
 import CoursePage from "./pages/CoursePage";
 import AdminPage from "./pages/AdminPage";
+import AdminLogin from "./pages/AdminLogin";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/island" element={<StudentIsland />} />
         <Route path="/course/:courseName" element={<CoursePage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
     </Router>
     

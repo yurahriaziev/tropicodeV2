@@ -7,15 +7,12 @@ import Navbar from "../components/Navbar";
 import SkillSection from "../components/SkillSection";
 
 export default function Home() {
-    const [testData, setTestData] = useState({})
-
     useEffect(() => {
         const fetchData = async() => {
             try {
                 const response = await fetch('http://127.0.0.1:8000/')
                 
                 const data = await response.json()
-                setTestData(data)
                 console.log(data)
             } catch (e) {
                 console.log(e)

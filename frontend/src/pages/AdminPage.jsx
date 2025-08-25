@@ -1,13 +1,42 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { API_URL } from "../config"
 
 export default function AdminPage() {
-  const adminData = useState({})
+  const [error, setError] = useState('')
 
   //TODO
   // Fetch admin user from database and get name, and info
-  const fetchAdminPersonalData = () => {
+  useEffect(() => {
+    const fetchAdminPersonalData = async() => {
+      const token = localStorage.getItem('token')
+      if (token) {
+        try {
+          const response = await fetch(`${API_URL}/users/me`, {
+            method: 'GET',
+            headers: {
+              'Authorization':`Bearer ${token}`
+            }
+          })
+
+          if (!response.ok) {
+            setError('Invalid request')
+            localStorage.removeItem('token')
+            return
+          }
+
+          const data = await response.json()
+          console.log(data)
+        } catch (error) {
+          console.log(error) // log
+          setError('Invalid request')
+        }
+      } else {
+        setError('Not logged in')
+      }
+    }
     
-  }
+    fetchAdminPersonalData()
+  }, [])
 
   return (
     <div className="page">
