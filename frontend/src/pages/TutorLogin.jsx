@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { API_URL } from "../config"
 import { useNavigate } from "react-router-dom"
 import Error from "../components/Error"
 
-export default function AdminLogin() {
+export default function TutorLogin() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
@@ -36,9 +36,9 @@ export default function AdminLogin() {
             const data = await response.json()
             const token = data.access_token
 
-            console.log('Admin login successful', token)
+            console.log('Tutor login successful', token)
             localStorage.setItem('token', token)
-            navigate('/admin')
+            navigate('/tropitutor')
         } catch(error) {
             console.log(error)
             setError('Problem with the server')
@@ -50,7 +50,7 @@ export default function AdminLogin() {
             {error && (
                 <Error message={error} onClose={() => setError(null)}/>
             )}
-            <h1>Welcome Admin! Log in here</h1>
+            <h1>Welcome Tutor! Log in here</h1>
             <form onSubmit={handleSubmit}>
                 <input
                     id="email"

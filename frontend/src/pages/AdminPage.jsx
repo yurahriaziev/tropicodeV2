@@ -1,8 +1,16 @@
 import { useEffect, useState } from "react"
 import { API_URL } from "../config"
+import { useNavigate } from "react-router-dom"
 
 export default function AdminPage() {
   const [error, setError] = useState('')
+  const navigate = useNavigate()
+  const [adminData, setAdminData] = useState({})
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    navigate('/')
+  }
 
   //TODO
   // Fetch admin user from database and get name, and info
@@ -25,6 +33,7 @@ export default function AdminPage() {
           }
 
           const data = await response.json()
+          setAdminData(data)
           console.log(data)
         } catch (error) {
           console.log(error) // log
@@ -46,11 +55,13 @@ export default function AdminPage() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-sm">T</span>
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Tropicode Admin</h1>
+            <h1 className="text-2xl font-bold text-foreground">Tropicode Admin | {adminData.first}</h1>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-muted-foreground">Welcome back, Admin</span>
             <div className="w-8 h-8 bg-accent rounded-full"></div>
+            <button onClick={handleLogout} className="px-3 py-1 text-gray-800 rounded-md hover:bg-black hover:text-white transition-colors cursor-pointer">
+              Logout
+            </button>
           </div>
         </div>
       </header>
