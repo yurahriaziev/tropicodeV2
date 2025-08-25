@@ -41,6 +41,7 @@ export default function TutorPage() {
 
     return (
         <div className="page">
+        {/* header */}
         <header className="bg-card border-b border-border px-6 py-4">
             <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -57,6 +58,8 @@ export default function TutorPage() {
             </div>
             </div>
         </header>
+
+        
         </div>
     )
 }

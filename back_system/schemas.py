@@ -37,3 +37,8 @@ class ServerStatus(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class StudentCreate(BaseModel):
+    first: str
+    last: str
+    age: int
