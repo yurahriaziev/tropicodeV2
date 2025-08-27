@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 
 export default function Login() {
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="bg-white min-h-screen flex flex-col">
             <Navbar />
             <div className="flex-grow">
             <LoginCard />

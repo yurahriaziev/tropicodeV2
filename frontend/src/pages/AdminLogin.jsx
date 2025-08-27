@@ -46,11 +46,11 @@ export default function AdminLogin() {
     }
 
     return (
-        <div>
+        <div className="bg-gray-100 dark:bg-gray-900">
             {error && (
                 <Error message={error} onClose={() => setError(null)}/>
             )}
-            <h1>Welcome Admin! Log in here</h1>
+            <h1 className="text-gray-900 dark:text-white">Welcome Admin! Log in here</h1>
             <form onSubmit={handleSubmit}>
                 <input
                     id="email"
@@ -61,6 +61,7 @@ export default function AdminLogin() {
                     placeholder="email@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="bg-white dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-600"
                 />
                 <input
                     id="password"
@@ -70,8 +71,9 @@ export default function AdminLogin() {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    className="bg-white dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-600"
                 />
-                <button type="submit">
+                <button type="submit" className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white">
                     Sign In
                 </button>
             </form>

@@ -7,7 +7,7 @@ export default function Navbar() {
     }
 
     return (
-        <nav className="flex justify-between items-center px-8 py-4 shadow-sm">
+        <nav className=" bg-white flex justify-between items-center px-8 py-4 shadow-sm">
             <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center font-bold">
                     T

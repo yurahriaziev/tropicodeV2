@@ -69,7 +69,7 @@ export default function Error({ message, onClose }) {
         className={`
          bg-red-500 text-white px-6 py-4 rounded-b-lg shadow-lg max-w-md w-full mx-4
           flex items-center space-x-3 transform transition-all duration-300 ease-out
-          ${isVisible && !isClosing ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}
+          ${isVisible && !isClosing ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 items-center"}
         `}
       >
         <p className="flex-1 font-medium text-white">{message}</p>
