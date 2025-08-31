@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { FaUserGraduate, FaUserFriends } from "react-icons/fa";
+import Error from "./Error";
+import { API_URL } from "../config";
+
 
 export default function LoginCard() {
     const [accountType, setAccountType] = useState("student")
     const isStudent = accountType === "student"
+    const [error, setError] = useState('')
+    const [studentCode, setStudentCode] = useState('')
 
     const info = {
         student: {
@@ -27,13 +32,59 @@ export default function LoginCard() {
           }
     }
 
+    const handleSubmit = async(e) => {
+        e.preventDefault()
+        console.log('Student login attemp') // LOG
+        setError('')
+
+        if (!studentCode) {
+            setError('Enter student code please')
+            return
+        }
+
+        if (studentCode.length != 4) {
+            setError('Incorrect student code')
+            return
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/auth/student/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({
+                    'code':studentCode
+                })
+            })
+
+            if (!response.ok) {
+                setError('Invalid Code')
+                return
+            }
+
+            const data = await response.json()
+            const token = data.access_token
+
+            console.log('Student login successful', token) // LOG
+            localStorage.setItem('token', token)
+            
+        } catch(error) {
+            setError('Server error. Try again later')
+            console.log(error)
+        }
+    }
+
     return (
         <div className="flex min-h-full md:min-h-[calc(100vh-151px)]">
+            {error && (
+                <Error message={error} onClose={() => setError(null)}/>
+            )}
+
             <div className="w-full md:w-1/2 px-10 py-8 md:px-55 md:py-20">
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back!</h1>
                 <p className="text-gray-600 mb-6">Choose your account type to continue</p>
 
-                {/* Account Type Toggle */}
                 <div className="flex gap-4 mb-6">
                 <button
                     onClick={() => setAccountType('student')}
@@ -51,57 +102,56 @@ export default function LoginCard() {
                 </button>
                 </div>
 
-                {/* Form */}
-                <form className="space-y-4">
-                {isStudent ? (
-                    <input
-                        type="text"
-                        placeholder="Enter your 4-character code"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        required
-                    />
-                ) : (
-                    <>
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                    {isStudent ? (
                         <input
-                            type="email"
-                            placeholder="Enter your parent email"
+                            type="text"
+                            placeholder="Enter your 4-character code"
                             className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            required
+                            value={studentCode}
+                            onChange={(e) => setStudentCode(e.target.value)}
                         />
-                        <input
-                            type="password"
-                            placeholder="Enter your password"
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            required
-                        />
-                    </>
-                )}
+                    ) : (
+                        <>
+                            <input
+                                type="email"
+                                placeholder="Enter your parent email"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Enter your password"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                required
+                            />
+                        </>
+                    )}
 
-                {!isStudent && (
-                    <>
-                        <div className="flex items-center justify-between text-sm">
-                            <label className="flex items-center">
-                            {/* <input type="checkbox" className="mr-2" /> Remember me */}
-                            </label>
-                            <a href="#" className="text-purple-600 hover:underline">Forgot password?</a>
-                        </div>
-                        {/* <p className="text-center text-sm text-gray-600 mt-6">
-                        Don't have an account? <a href="#" className="text-purple-600 hover:underline">Sign up here</a>
-                        </p> */}
-                    </>
-                )}
+                    {!isStudent && (
+                        <>
+                            <div className="flex items-center justify-between text-sm">
+                                <label className="flex items-center">
+                                {/* <input type="checkbox" className="mr-2" /> Remember me */}
+                                </label>
+                                <a href="#" className="text-purple-600 hover:underline">Forgot password?</a>
+                            </div>
+                            {/* <p className="text-center text-sm text-gray-600 mt-6">
+                            Don't have an account? <a href="#" className="text-purple-600 hover:underline">Sign up here</a>
+                            </p> */}
+                        </>
+                    )}
 
-                <button
-                    type="submit"
-                    className={`w-full py-3 rounded-md font-medium text-white transition
-                    ${isStudent ? 'bg-purple-600 hover:bg-purple-700' : 'bg-green-600 hover:bg-green-700'}`}
-                >
-                    Sign In as {isStudent ? 'Student' : 'Parent'}
-                </button>
+                    <button
+                        type="submit"
+                        className={`cursor-pointer w-full py-3 rounded-md font-medium text-white transition
+                        ${isStudent ? 'bg-purple-600 hover:bg-purple-700' : 'bg-green-600 hover:bg-green-700'}`}
+                    >
+                        Sign In as {isStudent ? 'Student' : 'Parent'}
+                    </button>
                 </form>
             </div>
 
-            {/* Right Side - Info Panel */}
             <div className="hidden md:flex w-1/2 flex-col justify-center items-center text-white p-10 bg-gradient-to-br from-purple-600 to-green-500">
                 <div className="max-w-sm text-center">
                     <div className="text-4xl mb-4 flex justify-center">

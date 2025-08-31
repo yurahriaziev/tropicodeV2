@@ -11,7 +11,7 @@ export default function TutorLogin() {
 
     const handleSubmit = async(e) => {
         e.preventDefault()
-        console.log('Login attempt')
+        console.log('Login attempt') // LOG
         setError('')
 
         if (!email || !password) {

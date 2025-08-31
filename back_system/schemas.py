@@ -42,3 +42,6 @@ class StudentCreate(BaseModel):
     first: str
     last: str
     age: int
+
+class StudentLogin(BaseModel):
+    code: str
