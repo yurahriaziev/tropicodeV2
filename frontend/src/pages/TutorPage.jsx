@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { API_URL } from "../config"
+import StudentCard from "../components/StudentCard"
 
 export default function TutorPage() {
     const [error, setError] = useState('')
@@ -39,38 +40,75 @@ export default function TutorPage() {
         fetchTutor()
     }, [])
 
+    const mockStudents = [
+        { first: 'Brandon', last: 'Lee' },
+        { first: 'Anya', last: 'Sharma' },
+        { first: 'Timmy', last: 'Turner' },
+    ];
+
     return (
-        <div className="page">
-            {/* header */}
-            <header className="bg-card border-b border-border px-6 py-4">
+        <div className="page bg-gray-50 dark:bg-gray-900 min-h-screen">
+            <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
                 <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                    <span className="text-primary-foreground font-bold text-sm">T</span>
+                    <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">T</span>
                     </div>
-                    <h1 className="text-2xl font-bold text-foreground">Tropicode Tutor | {tutorData.first}</h1>
+                    <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Tropicode Tutor | {tutorData.first}</h1>
                 </div>
                 <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 bg-accent rounded-full"></div>
-                    <button onClick={handleLogout} className="px-3 py-1 text-gray-800 rounded-md hover:bg-black hover:text-white transition-colors cursor-pointer">
+                    <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                    <button onClick={handleLogout} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer">
                     Logout
                     </button>
                 </div>
                 </div>
             </header>
 
-            {/* students section */}
-            <div className="p-6">
-                {/* This div now matches the header's layout and spacing */}
+            <div className="grid grid-cols-7 grid-rows-5 gap-4 m-6">
+                <div className="col-span-2 row-span-5 space-y-4">
+                    {mockStudents.map((student, index) => (
+                        <StudentCard key={index} student={student} />
+                    ))}
+                </div>
+                <div className="col-span-4 row-span-5 col-start-3">
+                    <div className="bg-white dark:bg-gray-800 p-6 shadow-md">
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Upcoming Classes</h3>
+                        <p className="text-gray-600 dark:text-gray-400">No upcoming classes scheduled</p>
+                    </div>
+                </div>
+                <div className="row-span-5 col-start-7 ">
+                    <div className="bg-white dark:bg-gray-800 p-6 shadow-md">
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Actions</h3>
+                        <p className="text-gray-600 dark:text-gray-400">Actions coming soon</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* <div className="p-6">
                 <div id="header" className="flex items-center justify-between mb-4">
-                    <h2 className="text-2xl font-bold text-gray-900">My Students</h2>
-                    {/* Styled button */}
-                    <button className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">My Students</h2>
+                    <button className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-purple-600 dark:bg-purple-500 border border-transparent rounded-md shadow-sm hover:bg-purple-700 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                         New student
                     </button>
                 </div>
-                {/* You can add your student list/table here */}
-            </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                    <div className="lg:col-span-1 space-y-6">
+                        {mockStudents.map((student, index) => (
+                            <StudentCard key={index} student={student} />
+                        ))}
+                    </div>
+
+                    <div className="lg:col-span-2">
+                        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Upcoming Classes</h3>
+                            <p className="text-gray-600 dark:text-gray-400">No upcoming classes scheduled.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div> */}
         </div>
     )
 }

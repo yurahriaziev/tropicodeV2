@@ -39,6 +39,7 @@ export default function AdminLogin() {
             }
 
             const data = await response.json()
+            console.log(data)
 
             if (!data.role || data.role != 'admin') {
                 setError("You don't have access to this page")
