@@ -41,13 +41,19 @@ export default function AdminLogin() {
             const data = await response.json()
             console.log(data)
 
-            if (!data.role || data.role != 'admin') {
+            const token = data.access_token
+            const admin = await fetch(`${API_URL}/users/me`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            const adminData = await admin.json()
+
+            if (!adminData.role || adminData.role != 'admin') {
                 setError("You don't have access to this page")
                 return
             }
-            const token = data.access_token
 
-            console.log('Admin login successful', token)
             localStorage.setItem('token', token)
             navigate('/admin')
         } catch(error) {
