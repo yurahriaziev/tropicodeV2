@@ -74,8 +74,6 @@ def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(ge
         if id is None:
             raise HTTPException(status_code=401, detail='Invalid Credentials')
         
-        id = int(id)
-        
     except JWTError as je:
         raise HTTPException(status_code=401, detail='Invalid Credentials')
     

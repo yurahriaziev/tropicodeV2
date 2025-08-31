@@ -18,13 +18,13 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/course/:courseName" element={<CoursePage />} />
 
-        <Route path="/island" element={<ProtectedRoute loginPath={'/login'}><StudentIsland /></ProtectedRoute>} />
+        <Route path="/island" element={<ProtectedRoute loginPath={'/login'} type={'student'}><StudentIsland /></ProtectedRoute>} />
 
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<ProtectedRoute loginPath={'/admin/login'}><AdminPage /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute loginPath={'/admin/login'} type={'admin'}><AdminPage /></ProtectedRoute>} />
 
         <Route path="/tropitutor/login" element={<TutorLogin />} />
-        <Route path="/tropitutor" element={<ProtectedRoute loginPath={'/tropitutor/login'}><TutorPage /></ProtectedRoute>} />
+        <Route path="/tropitutor" element={<ProtectedRoute loginPath={'/tropitutor/login'} type={'tutor'}><TutorPage /></ProtectedRoute>} />
       </Routes>
     </Router>
     
