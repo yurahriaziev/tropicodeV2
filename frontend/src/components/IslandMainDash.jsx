@@ -1,17 +1,46 @@
+import { useEffect, useState } from "react";
 import WelcomeBanner from "./WelcomeBanner";
+import { API_URL } from "../config";
 
 export default function IslandMainDash() {
-    const mockStudentData = {
-        name: "Brandon",
-        email: "alex.johnson@email.com",
-        grade: "8th Grade",
-        joinDate: "September 2024",
-        level: 12
-    }
+    const [studentData, setStudentData] = useState({})
+    const [error, setError] = useState('')
+
+    useEffect(() => {
+        const fetchStudentData = async() => {
+            const token = localStorage.getItem('token')
+            if (token) {
+                try {
+                    const response = await fetch(`${API_URL}/users/me`, {
+                        method: 'GET',
+                        headers: {'Authorization':`Bearer ${token}`}
+                    })
+
+                    if (!response.ok) {
+                        setError('Invalid request')
+                        localStorage.removeItem('token')
+                        return
+                    }
+
+                    const data = await response.json()
+                    setStudentData(data)
+                    console.log(data) // LOG
+                } catch(error) {
+                    console.log(error) // LOG
+                    setError('Invalid request')
+                }
+            } else {
+                setError('Not logged in')
+                return
+            }
+        }
+
+        fetchStudentData()
+    }, [])
     
     return (
         <main className="min-h-[calc(100vh-75px)] overflow-hidden bg-green-50">
-            <WelcomeBanner name={mockStudentData.name} />
+            <WelcomeBanner name={studentData.first} />
         </main>
     )
 }

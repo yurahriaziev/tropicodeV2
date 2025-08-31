@@ -12,8 +12,6 @@ export default function AdminPage() {
     navigate('/')
   }
 
-  //TODO
-  // Fetch admin user from database and get name, and info
   useEffect(() => {
     const fetchAdminPersonalData = async() => {
       const token = localStorage.getItem('token')
@@ -34,9 +32,9 @@ export default function AdminPage() {
 
           const data = await response.json()
           setAdminData(data)
-          console.log(data)
+          console.log(data) // LOG
         } catch (error) {
-          console.log(error) // log
+          console.log(error) // LOG
           setError('Invalid request')
         }
       } else {
