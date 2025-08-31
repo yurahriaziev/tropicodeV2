@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { FaSun } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function IslandNavbar() {
     const [time, setTime] = useState(new Date())
+    const navigate = useNavigate()
     
     useEffect(() => {
         const timer = setInterval(() => setTime(new Date()), 1000)
@@ -10,6 +12,11 @@ export default function IslandNavbar() {
     })
 
     const formattedTime = time.toLocaleTimeString()
+
+    const handleLogout = () => {
+        localStorage.removeItem('token')
+        navigate('/')
+    }
     
     return (
         <header className="w-full bg-white border-b border-gray-200 shadow-sm">
@@ -35,7 +42,7 @@ export default function IslandNavbar() {
                     Profile
                 </button>
 
-                <button className="px-4 py-2 bg-teal-600 text-white rounded-xl text-sm hover:bg-teal-700 transition">
+                <button onClick={handleLogout} className="px-4 py-2 bg-teal-600 text-white rounded-xl text-sm hover:bg-teal-700 transition">
                     Sign Out
                 </button>
                 </div>

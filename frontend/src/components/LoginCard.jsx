@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaUserGraduate, FaUserFriends } from "react-icons/fa";
 import Error from "./Error";
 import { API_URL } from "../config";
+import { useNavigate } from "react-router-dom"
 
 
 export default function LoginCard() {
@@ -9,6 +10,7 @@ export default function LoginCard() {
     const isStudent = accountType === "student"
     const [error, setError] = useState('')
     const [studentCode, setStudentCode] = useState('')
+    const navigate = useNavigate()
 
     const info = {
         student: {
@@ -68,7 +70,7 @@ export default function LoginCard() {
 
             console.log('Student login successful', token) // LOG
             localStorage.setItem('token', token)
-            
+            navigate('/island')
         } catch(error) {
             setError('Server error. Try again later')
             console.log(error)
@@ -109,7 +111,8 @@ export default function LoginCard() {
                             placeholder="Enter your 4-character code"
                             className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                             value={studentCode}
-                            onChange={(e) => setStudentCode(e.target.value)}
+                            onChange={(e) => setStudentCode(e.target.value.toUpperCase())}
+                            maxLength={4}
                         />
                     ) : (
                         <>
