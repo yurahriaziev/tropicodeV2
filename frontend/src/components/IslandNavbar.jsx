@@ -38,9 +38,9 @@ export default function IslandNavbar() {
                     <span className="font-mono text-gray-800">{formattedTime}</span>
                 </div>
 
-                <button className="px-4 py-2 border border-teal-600 text-teal-600 rounded-xl text-sm hover:bg-teal-50 transition">
+                {/* <button className="px-4 py-2 border border-teal-600 text-teal-600 rounded-xl text-sm hover:bg-teal-50 transition">
                     Profile
-                </button>
+                </button> */}
 
                 <button onClick={handleLogout} className="px-4 py-2 bg-teal-600 text-white rounded-xl text-sm hover:bg-teal-700 transition">
                     Sign Out

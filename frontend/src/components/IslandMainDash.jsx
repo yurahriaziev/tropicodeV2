@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import WelcomeBanner from "./WelcomeBanner";
 import { API_URL } from "../config";
+import IslandActionBar from "./IslandActionBar";
 
 export default function IslandMainDash() {
     const [studentData, setStudentData] = useState({})
@@ -41,6 +42,7 @@ export default function IslandMainDash() {
     return (
         <main className="min-h-[calc(100vh-75px)] overflow-hidden bg-green-50">
             <WelcomeBanner name={studentData.first} />
+            <IslandActionBar />
         </main>
     )
 }
