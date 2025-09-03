@@ -6,6 +6,7 @@ import IslandActionBar from "./IslandActionBar";
 export default function IslandMainDash() {
     const [studentData, setStudentData] = useState({})
     const [error, setError] = useState('')
+    const [activeTab, setActiveTab] = useState('classes')
 
     useEffect(() => {
         const fetchStudentData = async() => {
@@ -40,9 +41,10 @@ export default function IslandMainDash() {
     }, [])
     
     return (
-        <main className="min-h-[calc(100vh-75px)] overflow-hidden bg-green-50">
+        <main className={`min-h-[calc(100vh-75px)] overflow-hidden bg-green-50 dark:bg-[#1e1b2b]`}>
             <WelcomeBanner name={studentData.first} />
-            <IslandActionBar />
+            <IslandActionBar activeTab={activeTab} setActiveTab={setActiveTab} />
+
         </main>
     )
 }
