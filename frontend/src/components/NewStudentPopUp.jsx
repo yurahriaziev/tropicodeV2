@@ -14,13 +14,20 @@ export default function NewStudentPopUp({ isOpen, onClose, onSubmit }) {
         return null
     }
 
+    const handleClose = () => {
+        setFirst('')
+        setLast('')
+        setAge('')
+        onClose()
+    }
+
     return (
         <div className="fixed inset-0 bg-black/90 z-40 flex items-center justify-center p-4">
       
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6 relative">
         
             <button 
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
             >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
@@ -65,7 +72,7 @@ export default function NewStudentPopUp({ isOpen, onClose, onSubmit }) {
                 <div className="flex justify-end pt-4">
                     <button 
                         type="button"
-                        onClick={onClose}
+                        onClick={handleClose}
                         className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-600 rounded-md hover:bg-gray-200 dark:hover:bg-gray-500 mr-2"
                     >
                         Cancel

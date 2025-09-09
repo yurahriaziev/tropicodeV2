@@ -136,7 +136,7 @@ export default function TutorPage() {
             <NewStudentPopUp
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)} 
-                onSubmit={handleCreateStudent} // A function to handle the API call
+                onSubmit={handleCreateStudent}
             />
         </div>
     )
