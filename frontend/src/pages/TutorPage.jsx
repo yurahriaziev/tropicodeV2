@@ -2,11 +2,15 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { API_URL } from "../config"
 import StudentCard from "../components/StudentCard"
+import NewStudentBtn from "../components/NewStudentBtn"
+import NewStudentPopUp from "../components/NewStudentPopUp"
+import Error from "../components/Error"
 
 export default function TutorPage() {
     const [error, setError] = useState('')
     const navigate = useNavigate()
     const [tutorData, setTutorData] = useState({})
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     const handleLogout = () => {
         localStorage.removeItem('token')
@@ -40,6 +44,47 @@ export default function TutorPage() {
         fetchTutor()
     }, [])
 
+    const handleCreateStudent = async(student) => {
+        console.log('new student') // LOG
+
+        setError('')
+        console.log(student)
+
+        if (!student.first || !student.last || !student.age) {
+            setError('Fill out all spots')
+            return
+        }
+
+        try {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                setError('Not authorized')
+                navigate('/')
+                return
+            }
+            const response = await fetch(`${API_URL}/users/student`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json',
+                    'Authorization':`Bearer ${token}`
+                },
+                body: JSON.stringify(student)
+            })
+
+            if (!response.ok) {
+                setError('Error creating student. Try again')
+                console.log(response.status, response.statusText) // LOG
+            }
+
+            const data = response.json()
+            console.log(data)
+            setIsModalOpen(false)
+        } catch (error) {
+            setError('Server error. Try again')
+            console.log(error) // LOG
+        }
+    }
+
     const mockStudents = [
         { first: 'Brandon', last: 'Lee' },
         { first: 'Anya', last: 'Sharma' },
@@ -48,6 +93,9 @@ export default function TutorPage() {
 
     return (
         <div className="page bg-gray-50 dark:bg-gray-900 min-h-screen">
+            {error && (
+                <Error message={error} onClose={() => setError(null)}/>
+            )}
             <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
                 <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -80,35 +128,16 @@ export default function TutorPage() {
                 <div className="row-span-5 col-start-7 ">
                     <div className="bg-white dark:bg-gray-800 p-6 shadow-md">
                         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Actions</h3>
-                        <p className="text-gray-600 dark:text-gray-400">Actions coming soon</p>
+                        {/* <p className="text-gray-600 dark:text-gray-400">Actions coming soon</p> */}
+                        <NewStudentBtn onClick={() => setIsModalOpen(true)}/>
                     </div>
                 </div>
             </div>
-
-            {/* <div className="p-6">
-                <div id="header" className="flex items-center justify-between mb-4">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">My Students</h2>
-                    <button className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-purple-600 dark:bg-purple-500 border border-transparent rounded-md shadow-sm hover:bg-purple-700 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                        New student
-                    </button>
-                </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                    <div className="lg:col-span-1 space-y-6">
-                        {mockStudents.map((student, index) => (
-                            <StudentCard key={index} student={student} />
-                        ))}
-                    </div>
-
-                    <div className="lg:col-span-2">
-                        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-                            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Upcoming Classes</h3>
-                            <p className="text-gray-600 dark:text-gray-400">No upcoming classes scheduled.</p>
-                        </div>
-                    </div>
-
-                </div>
-            </div> */}
+            <NewStudentPopUp
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)} 
+                onSubmit={handleCreateStudent} // A function to handle the API call
+            />
         </div>
     )
 }

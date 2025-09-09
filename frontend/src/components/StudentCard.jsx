@@ -20,7 +20,7 @@ export default function StudentCard({ student }) {
                         {/* enrolled course or student stats */}
                     </div>
                     <div className="mt-auto">
-                        <button className="px-6 py-2 text-sm font-medium bg-gray-700 dark:bg-white text-white dark:text-gray-800 shadow-sm hover:bg-gray-100 dark:hover:bg-gray-400 transition-colors cursor-pointer">
+                        <button className="px-6 py-1 text-sm font-medium bg-gray-700 dark:bg-white text-white dark:text-gray-800 shadow-sm hover:bg-gray-100 dark:hover:bg-gray-400 transition-colors cursor-pointer">
                             Schedule Class
                         </button>
                     </div>
