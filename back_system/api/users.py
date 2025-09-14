@@ -68,27 +68,3 @@ def get_users(db: Session=Depends(get_db)):
 @router.get('/users/me', response_model=schemas.UserOut, tags=['Users'])
 def me(user:User = Depends(get_current_user)):
     return user
-
-@router.post('/users/student', response_model=schemas.UserOut, tags=['Students'])
-def student(student:schemas.StudentCreate, db: Session = Depends(get_db), user:User = Depends(get_current_user)):
-    if user.role not in [UserRole.TUTOR, UserRole.ADMIN]:
-        raise HTTPException(status_code=403, detail='Permission Denied')
-    
-    while True:
-        code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
-        if not db.query(User).filter(User.login_code == code).first():
-            login_code = code
-            break
-
-    db_student = User(
-        first=student.first,
-        last=student.last,
-        age=student.age,
-        role=UserRole.STUDENT,
-        login_code=login_code
-    )
-
-    db.add(db_student)
-    db.commit()
-    db.refresh(db_student)
-    return db_student
