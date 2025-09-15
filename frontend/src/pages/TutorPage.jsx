@@ -11,6 +11,7 @@ export default function TutorPage() {
     const navigate = useNavigate()
     const [tutorData, setTutorData] = useState({})
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [students, setStudents] = useState([])
 
     const handleLogout = () => {
         localStorage.removeItem('token')
@@ -28,10 +29,26 @@ export default function TutorPage() {
                     }
                 })
 
+                const studentsResponse = await fetch(`${API_URL}/tutors/me/students`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization':`Bearer ${token}`
+                    }
+                })
+
                 if (!response.ok) {
                     setError('Invalid request')
                     localStorage.removeItem('token')
                     return
+                }
+
+                if (!studentsResponse.ok) {
+                    setError('Error fetching studnts')
+                    setStudents([])
+                } else {
+                    // setStudents(response.json())
+                    const studentsData = await studentsResponse.json()
+                    setStudents(studentsData)
                 }
 
                 const data = await response.json()
@@ -41,6 +58,7 @@ export default function TutorPage() {
                 setError('Not logged in')
             }
         }
+
         fetchTutor()
     }, [])
 
@@ -62,7 +80,7 @@ export default function TutorPage() {
                 navigate('/')
                 return
             }
-            const response = await fetch(`${API_URL}/users/student`, {
+            const response = await fetch(`${API_URL}/tutors/student`, {
                 method: 'POST',
                 headers: {
                     'Content-Type':'application/json',
@@ -115,9 +133,17 @@ export default function TutorPage() {
 
             <div className="grid grid-cols-7 grid-rows-5 gap-4 m-6">
                 <div className="col-span-2 row-span-5 space-y-4">
-                    {mockStudents.map((student, index) => (
-                        <StudentCard key={index} student={student} />
-                    ))}
+                    {students.length > 0 ? (
+                        students.map((student, index) => (
+                            <StudentCard key={index} student={student} />
+                        ))
+                    ) : (
+                        <div className="flex items-center justify-center h-full bg-white dark:bg-gray-800 p-6 shadow-md">
+                            <p className="text-gray-500 dark:text-gray-400 italic">
+                                No students have been added yet.
+                            </p>
+                        </div>
+                    )}
                 </div>
                 <div className="col-span-4 row-span-5 col-start-3">
                     <div className="bg-white dark:bg-gray-800 p-6 shadow-md">
