@@ -19,7 +19,7 @@ app.include_router(users.router)
 app.include_router(auth.router)
 app.include_router(tutors.router)
 
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 @app.get('/', response_model=ServerStatus, tags=['Server Health'])
 def server_test():
