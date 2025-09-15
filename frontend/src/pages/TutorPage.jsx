@@ -29,26 +29,10 @@ export default function TutorPage() {
                     }
                 })
 
-                const studentsResponse = await fetch(`${API_URL}/tutors/me/students`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization':`Bearer ${token}`
-                    }
-                })
-
                 if (!response.ok) {
                     setError('Invalid request')
                     localStorage.removeItem('token')
                     return
-                }
-
-                if (!studentsResponse.ok) {
-                    setError('Error fetching studnts')
-                    setStudents([])
-                } else {
-                    // setStudents(response.json())
-                    const studentsData = await studentsResponse.json()
-                    setStudents(studentsData)
                 }
 
                 const data = await response.json()
@@ -94,8 +78,8 @@ export default function TutorPage() {
                 console.log(response.status, response.statusText) // LOG
             }
 
-            const data = response.json()
-            console.log(data)
+            const data = await response.json()
+            setStudents(prevStudents => [...prevStudents, data])
             setIsModalOpen(false)
         } catch (error) {
             setError('Server error. Try again')
@@ -103,11 +87,32 @@ export default function TutorPage() {
         }
     }
 
-    const mockStudents = [
-        { first: 'Brandon', last: 'Lee' },
-        { first: 'Anya', last: 'Sharma' },
-        { first: 'Timmy', last: 'Turner' },
-    ];
+    useEffect(() => {
+        const fetchStudents = async() => {
+            const token = localStorage.getItem('token')
+            if (token) {
+                const studentsResponse = await fetch(`${API_URL}/tutors/me/students`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization':`Bearer ${token}`
+                        }
+                    })
+
+                if (!studentsResponse.ok) {
+                    setError('Error fetching studnts')
+                    setStudents([])
+                } else {
+                    const studentsData = await studentsResponse.json()
+                    setStudents(studentsData)
+                    console.log(studentsData)
+                }
+            } else {
+                setError('Not logged in')
+            }
+        }
+
+        fetchStudents()
+    }, [])
 
     return (
         <div className="page bg-gray-50 dark:bg-gray-900 min-h-screen">
