@@ -138,6 +138,14 @@ export default function TutorPage() {
 
             <div className="grid grid-cols-7 grid-rows-5 gap-4 m-6">
                 <div className="col-span-2 row-span-5 space-y-4">
+                    <div>
+                        <a 
+                            href="http://localhost:8000/auth/google/login" 
+                            className="px-4 py-2 text-white bg-blue-600 rounded-md"
+                            >
+                            Connect Google Calendar
+                        </a>
+                    </div>
                     {students.length > 0 ? (
                         students.map((student, index) => (
                             <StudentCard key={index} student={student} />
