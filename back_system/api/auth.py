@@ -7,6 +7,7 @@ from db.session import SessionLocal
 from models.user import User, UserRole
 from core.security import verify_pass
 from schemas import Token, StudentLogin
+from db.redis_client import redis_client
 
 from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
@@ -70,21 +71,27 @@ def student_login(s: StudentLogin, db:Session = Depends(get_db)):
     return {'access_token':acc_token, 'token_type':'bearer'}
 
 @router.get('/auth/google/login')
-def google_login(request:Request):
+def google_login():
     auth_url, state = get_google_auth_url()
 
-    
+    redis_client.set(state, 1, ex=600)
         
     return RedirectResponse(url=auth_url)
 
 @router.get('/auth/google/callback')
-def google_callback(request: Request, code: str, state: str, db: Session = Depends(get_db)):
-    
+def google_callback(code: str, state: str, db: Session = Depends(get_db)):
+    stored_state = redis_client.get(state)
+    # log
+    print(f'Stored state: {stored_state}')
 
-    if stored_state is None or stored_state != state:
+    if stored_state is None:
         raise HTTPException(status_code=401, detail='Not authorized')
     
+    redis_client.delete(state)
+    
     tokens = fetch_google_tokens(code)
+    # log
+    print(f'Received token: {tokens}')
     user_info = get_google_user_info(tokens)
 
     return user_info

@@ -5,7 +5,12 @@ from googleapiclient.discovery import build
 
 load_dotenv()
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
+SCOPES = [
+    'openid',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/calendar'
+]
 CREDENTIALS = os.getenv('G_CREDENTIALS')
 
 def create_google_auth_flow():
