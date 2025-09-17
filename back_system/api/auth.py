@@ -73,21 +73,13 @@ def student_login(s: StudentLogin, db:Session = Depends(get_db)):
 def google_login(request:Request):
     auth_url, state = get_google_auth_url()
 
-    request.session['state'] = state
-    # log
-    print('/auth/google/login session state:', request.session['state'])
     
+        
     return RedirectResponse(url=auth_url)
 
 @router.get('/auth/google/callback')
 def google_callback(request: Request, code: str, state: str, db: Session = Depends(get_db)):
-    # log
-    print('/auth/google/callback request session state: ', request.session['state'])
-    stored_state = request.session.pop('state', None)
-
-    # log
-    print('state', state)
-    print('stored state', stored_state)
+    
 
     if stored_state is None or stored_state != state:
         raise HTTPException(status_code=401, detail='Not authorized')
