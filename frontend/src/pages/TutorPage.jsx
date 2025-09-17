@@ -140,7 +140,7 @@ export default function TutorPage() {
                 <div className="col-span-2 row-span-5 space-y-4">
                     <div>
                         <a 
-                            href="http://localhost:8000/auth/google/login" 
+                            href="http://127.0.0.1:8000/auth/google/login" 
                             className="px-4 py-2 text-white bg-blue-600 rounded-md"
                             >
                             Connect Google Calendar

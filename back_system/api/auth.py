@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
+from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -11,6 +12,8 @@ from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
 
 from core import config
+
+from services.google_meet_service import get_google_auth_url, fetch_google_tokens, get_google_user_info
 
 def get_db():
     db = SessionLocal()
@@ -66,6 +69,34 @@ def student_login(s: StudentLogin, db:Session = Depends(get_db)):
 
     return {'access_token':acc_token, 'token_type':'bearer'}
 
+@router.get('/auth/google/login')
+def google_login(request:Request):
+    auth_url, state = get_google_auth_url()
+
+    request.session['state'] = state
+    # log
+    print('/auth/google/login session state:', request.session['state'])
+    
+    return RedirectResponse(url=auth_url)
+
+@router.get('/auth/google/callback')
+def google_callback(request: Request, code: str, state: str, db: Session = Depends(get_db)):
+    # log
+    print('/auth/google/callback request session state: ', request.session['state'])
+    stored_state = request.session.pop('state', None)
+
+    # log
+    print('state', state)
+    print('stored state', stored_state)
+
+    if stored_state is None or stored_state != state:
+        raise HTTPException(status_code=401, detail='Not authorized')
+    
+    tokens = fetch_google_tokens(code)
+    user_info = get_google_user_info(tokens)
+
+    return user_info
+
 def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(get_db)):
     try:
         payload = jwt.decode(token, config.SECURITY_SECRET_KEY, config.ALGORITHM)
@@ -82,3 +113,4 @@ def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(ge
         raise HTTPException(status_code=401, detail='Invalid Credentials')
             
     return user
+

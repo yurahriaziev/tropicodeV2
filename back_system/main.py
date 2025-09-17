@@ -3,11 +3,24 @@ from db.session import engine, Base
 from datetime import datetime, timezone
 from api import users, auth, tutors
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 from schemas import ServerStatus
 from core.config import origins
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 app = FastAPI(title="TropicodeAPI")
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv('SESSION_SECRET'),
+    same_site='lax',
+    https_only=False
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

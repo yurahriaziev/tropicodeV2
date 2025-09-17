@@ -1,6 +1,7 @@
 import os
 from google_auth_oauthlib.flow import Flow
 from dotenv import load_dotenv
+from googleapiclient.discovery import build
 
 load_dotenv()
 
@@ -34,3 +35,11 @@ def fetch_google_tokens(code):
     flow.fetch_token(code=code)
 
     return flow.credentials
+
+def get_google_user_info(creds):
+    service = build(serviceName='oauth2', version='v2', credentials=creds)
+
+    user_info_req = service.userinfo().get()
+    user_info = user_info_req.execute()
+
+    return user_info
