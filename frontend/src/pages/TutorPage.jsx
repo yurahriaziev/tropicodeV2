@@ -5,6 +5,7 @@ import StudentCard from "../components/StudentCard"
 import NewStudentBtn from "../components/NewStudentBtn"
 import NewStudentPopUp from "../components/NewStudentPopUp"
 import Error from "../components/Error"
+import GoogleAccountBtn from "../components/GoogleAccountBtn"
 
 export default function TutorPage() {
     const [error, setError] = useState('')
@@ -12,6 +13,7 @@ export default function TutorPage() {
     const [tutorData, setTutorData] = useState({})
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [students, setStudents] = useState([])
+    const [googleConnected, setGoogleConnected] = useState(false)
 
     const handleLogout = () => {
         localStorage.removeItem('token')
@@ -136,16 +138,9 @@ export default function TutorPage() {
                 </div>
             </header>
 
-            <div className="grid grid-cols-7 grid-rows-5 gap-4 m-6">
+            <div className="grid grid-cols-8 grid-rows-5 gap-4 m-6">
                 <div className="col-span-2 row-span-5 space-y-4">
-                    <div>
-                        <a 
-                            href="http://127.0.0.1:8000/auth/google/login" 
-                            className="px-4 py-2 text-white bg-blue-600 rounded-md"
-                            >
-                            Connect Google Calendar
-                        </a>
-                    </div>
+                    
                     {students.length > 0 ? (
                         students.map((student, index) => (
                             <StudentCard key={index} student={student} />
@@ -157,6 +152,14 @@ export default function TutorPage() {
                             </p>
                         </div>
                     )}
+                    <div>
+                        <a 
+                            href="http://127.0.0.1:8000/auth/google/login" 
+                            className="px-4 py-2 text-white bg-blue-600 rounded-md"
+                            >
+                            Connect Google Calendar
+                        </a>
+                    </div>
                 </div>
                 <div className="col-span-4 row-span-5 col-start-3">
                     <div className="bg-white dark:bg-gray-800 p-6 shadow-md">
@@ -164,11 +167,14 @@ export default function TutorPage() {
                         <p className="text-gray-600 dark:text-gray-400">No upcoming classes scheduled</p>
                     </div>
                 </div>
-                <div className="row-span-5 col-start-7 ">
+                <div className="row-span-5 col-start-7 col-span-2">
                     <div className="bg-white dark:bg-gray-800 p-6 shadow-md">
                         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Actions</h3>
                         {/* <p className="text-gray-600 dark:text-gray-400">Actions coming soon</p> */}
-                        <NewStudentBtn onClick={() => setIsModalOpen(true)}/>
+                        <div className="flex flex-col space-y-4">
+                            <NewStudentBtn onClick={() => setIsModalOpen(true)} />
+                            <GoogleAccountBtn connected={googleConnected} />
+                        </div>
                     </div>
                 </div>
             </div>
