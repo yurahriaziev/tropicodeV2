@@ -1,8 +1,8 @@
-"""create users table
+"""New baseline
 
-Revision ID: e3995e926f05
+Revision ID: 02000c410b26
 Revises: 
-Create Date: 2025-09-13 13:36:54.552127
+Create Date: 2025-09-19 14:40:16.114555
 
 """
 from typing import Sequence, Union
@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # revision identifiers, used by Alembic.
-revision: str = 'e3995e926f05'
+revision: str = '02000c410b26'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

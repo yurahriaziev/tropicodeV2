@@ -152,14 +152,6 @@ export default function TutorPage() {
                             </p>
                         </div>
                     )}
-                    <div>
-                        <a 
-                            href="http://127.0.0.1:8000/auth/google/login" 
-                            className="px-4 py-2 text-white bg-blue-600 rounded-md"
-                            >
-                            Connect Google Calendar
-                        </a>
-                    </div>
                 </div>
                 <div className="col-span-4 row-span-5 col-start-3">
                     <div className="bg-white dark:bg-gray-800 p-6 shadow-md">
@@ -173,7 +165,7 @@ export default function TutorPage() {
                         {/* <p className="text-gray-600 dark:text-gray-400">Actions coming soon</p> */}
                         <div className="flex flex-col space-y-4">
                             <NewStudentBtn onClick={() => setIsModalOpen(true)} />
-                            <GoogleAccountBtn connected={googleConnected} />
+                            <GoogleAccountBtn connected={googleConnected} setError={setError} />
                         </div>
                     </div>
                 </div>

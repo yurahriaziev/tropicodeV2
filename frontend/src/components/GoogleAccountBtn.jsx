@@ -1,3 +1,5 @@
+import { API_URL } from "../config"
+
 const GoogleIcon = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -7,8 +9,30 @@ const GoogleIcon = () => (
   </svg>
 )
 
-export default function GoogleAccountBtn({ onClick, connected }) {
-  const buttonClasses = "cursor-pointer flex items-center gap-3 px-6 py-2 bg-white text-gray-800 dark:bg-gray-700 dark:text-white rounded-full shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200";
+export default function GoogleAccountBtn({ connected, setError }) {
+  const buttonClasses = "cursor-pointer flex items-center gap-3 px-6 py-2 bg-transparent border-1 border-white text-white rounded-full shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+
+  const handleGoogleConnectRequest = async() => {
+      const token = localStorage.getItem('token')
+      if (token) {
+        const response = await fetch(`${API_URL}/auth/google/login`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
+        if (!response.ok) {
+          setError('Invalid request. Try again later')
+          return
+        }
+
+        const data = await response.json()
+        window.location.href = data.url
+      } else {
+        setError('Unexpected error')
+      }
+  }
 
   return (
     <>
@@ -18,13 +42,10 @@ export default function GoogleAccountBtn({ onClick, connected }) {
           <span className="whitespace-nowrap">Update Google Account</span>
         </button>
       ) : (
-        <a 
-            href="http://localhost:8000/auth/google/login"
-            className="cursor-pointer flex items-center gap-3 px-6 py-2 bg-transparent border-1 border-white text-white rounded-full shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 "
-        >
+        <button onClick={handleGoogleConnectRequest} className={buttonClasses}>
           <GoogleIcon />
           <span className="whitespace-nowrap">Connect Google Account</span>
-        </a>
+        </button>
       )}
     </>
   );

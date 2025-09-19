@@ -12,7 +12,7 @@ from db.redis_client import redis_client
 from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
 
-from core import config
+from core import config, encryption
 
 from services.google_meet_service import get_google_auth_url, fetch_google_tokens, get_google_user_info
 
@@ -25,6 +25,23 @@ def get_db():
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/token')
+
+def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(get_db)):
+    try:
+        payload = jwt.decode(token, config.SECURITY_SECRET_KEY, config.ALGORITHM)
+        id:str = payload.get('sub')
+
+        if id is None:
+            raise HTTPException(status_code=401, detail='Invalid Credentials')
+        
+    except JWTError as je:
+        raise HTTPException(status_code=401, detail='Invalid Credentials')
+    
+    user = db.query(User).filter(User.id == payload.get('sub')).first()
+    if user is None:
+        raise HTTPException(status_code=401, detail='Invalid Credentials')
+            
+    return user
 
 @router.post("/auth/token", response_model=Token, tags=['Auth'])
 def get_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:Session = Depends(get_db)):
@@ -71,45 +88,35 @@ def student_login(s: StudentLogin, db:Session = Depends(get_db)):
     return {'access_token':acc_token, 'token_type':'bearer'}
 
 @router.get('/auth/google/login')
-def google_login():
+def google_login(user: User = Depends(get_current_user)):
+    print('got here')
     auth_url, state = get_google_auth_url()
 
-    redis_client.set(state, 1, ex=600)
+    redis_client.set(state, user.id, ex=600)
         
-    return RedirectResponse(url=auth_url)
+    return {'url':auth_url}
 
 @router.get('/auth/google/callback')
 def google_callback(code: str, state: str, db: Session = Depends(get_db)):
     stored_state = redis_client.get(state)
-    # log
-    print(f'Stored state: {stored_state}')
 
     if stored_state is None:
         raise HTTPException(status_code=401, detail='Not authorized')
     
+    user_id = stored_state
     redis_client.delete(state)
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user or user.role != UserRole.TUTOR:
+        raise HTTPException(status_code=401, detail='Not authorized')
     
     tokens = fetch_google_tokens(code)
-    # log
-    print(f'Received token: {tokens}')
     user_info = get_google_user_info(tokens)
 
-    return user_info
+    db_token = encryption.encrypt_token(tokens.refresh_token)
+    user.tutor_gmail = user_info['email']
+    user.token = db_token
+    db.commit()
 
-def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(get_db)):
-    try:
-        payload = jwt.decode(token, config.SECURITY_SECRET_KEY, config.ALGORITHM)
-        id:str = payload.get('sub')
-
-        if id is None:
-            raise HTTPException(status_code=401, detail='Invalid Credentials')
-        
-    except JWTError as je:
-        raise HTTPException(status_code=401, detail='Invalid Credentials')
-    
-    user = db.query(User).filter(User.id == payload.get('sub')).first()
-    if user is None:
-        raise HTTPException(status_code=401, detail='Invalid Credentials')
-            
-    return user
+    return RedirectResponse(url='http://localhost:5173/tropitutor')
 

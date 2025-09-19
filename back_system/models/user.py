@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import String, ForeignKey, LargeBinary
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Enum as SAEnum
 from db.session import Base
@@ -20,7 +20,9 @@ class User(Base):
     tutor_id: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=True)
 
     email: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=True)
+    tutor_gmail: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=True)
     hashed_password: Mapped[str] = mapped_column(String, nullable=True)
+    token: Mapped[LargeBinary] = mapped_column(LargeBinary, nullable=True)
 
     login_code: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=True)
 
