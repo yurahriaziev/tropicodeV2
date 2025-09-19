@@ -39,7 +39,11 @@ export default function TutorPage() {
 
                 const data = await response.json()
                 setTutorData(data)
-                console.log(data)
+
+                if (data.tutor_gmail) {
+                    setGoogleConnected(true)
+                }
+                console.log(data) // LOG
             } else {
                 setError('Not logged in')
             }

@@ -26,6 +26,7 @@ class UserOut(BaseModel):
     login_code: Optional[str] = None
     is_active: bool
     # hashed_password: Optional[str] = None
+    tutor_gmail: Optional[str] = None
 
     class Config:
         orm_mode = True
