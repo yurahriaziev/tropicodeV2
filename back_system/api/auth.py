@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from db.session import SessionLocal
 from models.user import User, UserRole
 from core.security import verify_pass
-from schemas import Token, StudentLogin
+from schemas import Token, StudentLogin, Optional
 from db.redis_client import redis_client
 
 from datetime import timedelta, datetime, timezone
@@ -97,7 +97,7 @@ def google_login(user: User = Depends(get_current_user)):
     return {'url':auth_url}
 
 @router.get('/auth/google/callback')
-def google_callback(code: str, state: str, db: Session = Depends(get_db)):
+def google_callback(state: str, db: Session = Depends(get_db), code: Optional[str] = None, error: Optional[str] = None):
     stored_state = redis_client.get(state)
 
     if stored_state is None:

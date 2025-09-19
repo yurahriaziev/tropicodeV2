@@ -37,7 +37,7 @@ export default function GoogleAccountBtn({ connected, setError }) {
   return (
     <>
       {connected ? (
-        <button className={buttonClasses}>
+        <button onClick={handleGoogleConnectRequest} className={buttonClasses}>
           <GoogleIcon />
           <span className="whitespace-nowrap">Update Google Account</span>
         </button>
