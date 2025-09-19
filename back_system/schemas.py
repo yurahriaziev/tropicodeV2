@@ -46,3 +46,6 @@ class StudentCreate(BaseModel):
 
 class StudentLogin(BaseModel):
     code: str
+
+class NewClass(BaseModel):
+    pass
