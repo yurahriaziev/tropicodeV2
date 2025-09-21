@@ -147,7 +147,7 @@ export default function TutorPage() {
                     
                     {students.length > 0 ? (
                         students.map((student, index) => (
-                            <StudentCard key={index} student={student} />
+                            <StudentCard key={index} student={student} setError={setError} />
                         ))
                     ) : (
                         <div className="flex items-center justify-center h-full bg-white dark:bg-gray-800 p-6 shadow-md">

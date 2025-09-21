@@ -48,4 +48,5 @@ class StudentLogin(BaseModel):
     code: str
 
 class NewClass(BaseModel):
-    pass
+    title: str
+    time: str

@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export default function StudentCard({ student }) {
+export default function StudentCard({ student, setError }) {
     const [isFlipped, setIsFlipped] = useState(false)
     const [title, setTitle] = useState('')
     const [startTime, setStartTime] = useState('')
@@ -8,10 +8,15 @@ export default function StudentCard({ student }) {
     const handleScheduleSubmit = (e) => {
         e.preventDefault()
 
+        if (!title || !startTime) {
+            setError('Enter class details')
+            return
+        }
+
         console.log({
-        studentId: student.id,
-        title,
-        startTime,
+            studentId: student.id,
+            title,
+            startTime,
         })
 
         setIsFlipped(false)
@@ -64,14 +69,14 @@ export default function StudentCard({ student }) {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="w-full px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
-                    required
+                    
                 />
                 <input
                     type="datetime-local"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
                     className="w-full px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
-                    required
+                    
                 />
                 </div>
                 <div className="flex justify-end items-center gap-2">
