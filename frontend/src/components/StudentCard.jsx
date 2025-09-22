@@ -1,23 +1,53 @@
 import { useState } from "react"
+import { API_URL } from "../config"
 
 export default function StudentCard({ student, setError }) {
     const [isFlipped, setIsFlipped] = useState(false)
     const [title, setTitle] = useState('')
     const [startTime, setStartTime] = useState('')
 
-    const handleScheduleSubmit = (e) => {
+    const handleScheduleSubmit = async(e) => {
         e.preventDefault()
 
         if (!title || !startTime) {
             setError('Enter class details')
             return
         }
-
-        console.log({
-            studentId: student.id,
-            title,
-            startTime,
-        })
+        const isoStart = new Date(startTime).toISOString()
+        
+        const studentId = student.id
+        console.log(typeof title)   // LOG
+        console.log(typeof startTime) // LOG
+        console.log(typeof studentId) // LOG
+        try {
+            const token = localStorage.getItem('token')
+            if (token) {
+                const classResponse = await fetch(`${API_URL}/classes`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title:title,
+                        start_time:isoStart,
+                        student_id:studentId
+                    })
+                })
+    
+                if (!classResponse.ok) {
+                    setError('Error making class')
+                    return
+                }
+    
+                const classData = await classResponse.json()
+                console.log('Class created') // LOG
+                console.log(classData) // LOG
+            }
+        } catch (error) {
+            setError('Server error')
+            return
+        }
 
         setIsFlipped(false)
         setTitle('')
