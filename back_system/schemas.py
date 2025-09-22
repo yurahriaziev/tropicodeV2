@@ -47,6 +47,13 @@ class StudentCreate(BaseModel):
 class StudentLogin(BaseModel):
     code: str
 
-class NewClass(BaseModel):
+class ClassCreate(BaseModel):
     title: str
-    time: str
+    start_time: str
+    student_id: int
+
+class GoogleClassOut(BaseModel):
+    title: str
+    start_time: datetime
+    end_time: datetime
+    google_meet_link: str
