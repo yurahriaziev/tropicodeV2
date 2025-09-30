@@ -21,7 +21,7 @@ const ActionButton = ({ id, label, iconSrc, activeTab, setActiveTab }) => (
 
 export default function IslandActionBar({ activeTab, setActiveTab }) {
     return (
-        <div className="flex justify-center items-center gap-5 bg-transparent border border-[#009689]/10">
+        <div className="flex justify-center items-center gap-5 bg-transparent border border-none">
           <ActionButton 
             id="classes" 
             label="Classes" 

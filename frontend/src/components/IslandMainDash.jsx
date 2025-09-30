@@ -41,10 +41,10 @@ export default function IslandMainDash() {
     }, [])
     
     return (
-        <main className={`min-h-[calc(100vh-75px)] overflow-hidden bg-green-50 dark:bg-[#1e1b2b]`}>
+        <main className={`min-h-[calc(100vh-75px)] overflow-hidden bg-green-50 dark:bg-[#1f1d25]`}>
             <WelcomeBanner name={studentData.first} />
             <IslandActionBar activeTab={activeTab} setActiveTab={setActiveTab} />
-
+            
         </main>
     )
 }
