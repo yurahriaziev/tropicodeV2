@@ -14,7 +14,6 @@ from jose import jwt, JWTError
 
 from core import config, encryption
 
-from services.google_meet_service import get_google_auth_url, fetch_google_tokens, get_google_user_info
 
 def get_db():
     db = SessionLocal()
@@ -23,7 +22,7 @@ def get_db():
     finally:
         db.close()
 
-router = APIRouter()
+router = APIRouter(prefix='/auth')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(get_db)):
@@ -43,7 +42,7 @@ def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(ge
             
     return user
 
-@router.post("/auth/token", response_model=Token, tags=['Auth'])
+@router.post("/token", response_model=Token, tags=['Auth'])
 def get_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:Session = Depends(get_db)):
     email = form_data.username
     password = form_data.password
@@ -69,7 +68,7 @@ def get_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:Sessio
 
     return {'access_token':acc_t, 'token_type':'bearer'}
 
-@router.post('/auth/student/login', response_model=Token)
+@router.post('/student/login', response_model=Token)
 def student_login(s: StudentLogin, db:Session = Depends(get_db)):
     student = db.query(User).filter(User.login_code == s.code).first()
 
@@ -87,36 +86,47 @@ def student_login(s: StudentLogin, db:Session = Depends(get_db)):
 
     return {'access_token':acc_token, 'token_type':'bearer'}
 
-@router.get('/auth/google/login')
-def google_login(user: User = Depends(get_current_user)):
-    print('got here')
-    auth_url, state = get_google_auth_url()
+# @router.get('/google/login')
+# def google_login(user: User = Depends(get_current_user)):
+#     print('got here')
+#     auth_url, state = get_google_auth_url()
 
-    redis_client.set(state, user.id, ex=600)
-        
-    return {'url':auth_url}
-
-@router.get('/auth/google/callback')
-def google_callback(state: str, db: Session = Depends(get_db), code: Optional[str] = None, error: Optional[str] = None):
-    stored_state = redis_client.get(state)
-
-    if stored_state is None:
-        raise HTTPException(status_code=401, detail='Not authorized')
+#     redis_client.set(state, user.id, ex=600)
     
-    user_id = stored_state
-    redis_client.delete(state)
+#     print('before return') # LOG
+#     return {'url':auth_url, 'state':state}
 
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user or user.role != UserRole.TUTOR:
-        raise HTTPException(status_code=401, detail='Not authorized')
+# @router.get('/google/callback')
+# def google_callback(state: str, db: Session = Depends(get_db), code: Optional[str] = None, error: Optional[str] = None):
+#     print(error)
+#     print('got here 1A')  # LOG
+#     stored_state = redis_client.get(state)
+
+#     if stored_state is None:
+#         raise HTTPException(status_code=401, detail='Not authorized')
     
-    tokens = fetch_google_tokens(code)
-    user_info = get_google_user_info(tokens)
+#     print('got here 2A')  # LOG
+#     user_id = stored_state
+#     redis_client.delete(state)
 
-    db_token = encryption.encrypt_token(tokens.refresh_token)
-    user.tutor_gmail = user_info['email']
-    user.token = db_token
-    db.commit()
+#     print('got here 3A')  # LOG
+#     user = db.query(User).filter(User.id == user_id).first()
+#     if not user or user.role != UserRole.TUTOR:
+#         raise HTTPException(status_code=401, detail='Not authorized')
+    
+#     tokens = fetch_google_tokens(code)
+#     user_info = get_google_user_info(tokens)
+#     print(tokens) # LOG
+#     print() # LOG
+#     print(user_info) # LOG
 
-    return RedirectResponse(url='http://localhost:5173/tropitutor')
+#     user.tutor_gmail = user_info['email']
+
+#     if tokens.refresh_token:
+#         print(tokens.refresh_token) # LOG
+#         db_token = encryption.encrypt_token(tokens.refresh_token)
+#         user.token = db_token
+#     db.commit()
+
+#     return RedirectResponse(url='http://localhost:5173/tropitutor')
 

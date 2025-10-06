@@ -36,7 +36,7 @@ export default function StudentCard({ student, setError }) {
                 })
     
                 if (!classResponse.ok) {
-                    setError('Error making class')
+                    setError('Please log in with Google again')
                     return
                 }
     

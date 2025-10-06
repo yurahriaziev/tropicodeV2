@@ -1,0 +1,23 @@
+services:
+  redis:
+    image: redis:7
+    container_name: tropicode_redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tropicode_api
+    ports:
+      - "8000:8000"
+    env_file:
+      - back_system/.env
+    depends_on:
+      - redis
+    volumes:
+      - ./back_system:/tropicode/back_system
+      - ./requirements.txt:/tropicode/requirements.txt
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload

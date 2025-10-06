@@ -29,6 +29,7 @@ export default function GoogleAccountBtn({ connected, setError }) {
 
         const data = await response.json()
         window.location.href = data.url
+        console.log('sending user to', data.url) //LOG
       } else {
         setError('Unexpected error')
       }
