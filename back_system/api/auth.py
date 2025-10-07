@@ -11,9 +11,22 @@ from db.redis_client import redis_client
 
 from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from core import config, encryption
+import secrets
 
+from google_auth_oauthlib.flow import Flow
+from googleapiclient.discovery import build
+
+SCOPES = [
+    'openid',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/calendar'
+]
 
 def get_db():
     db = SessionLocal()
@@ -86,16 +99,95 @@ def student_login(s: StudentLogin, db:Session = Depends(get_db)):
 
     return {'access_token':acc_token, 'token_type':'bearer'}
 
-# @router.get('/google/login')
-# def google_login(user: User = Depends(get_current_user)):
-#     print('got here')
-#     auth_url, state = get_google_auth_url()
-
-#     redis_client.set(state, user.id, ex=600)
+@router.get('/google/login')
+def google_login(user: User = Depends(get_current_user)):
+    if not user or user.role not in [UserRole.ADMIN, UserRole.TUTOR]:
+        raise HTTPException(status_code=401, detail='Not authorized')
     
-#     print('before return') # LOG
-#     return {'url':auth_url, 'state':state}
+    state = secrets.token_urlsafe(16)
+    redis_client.setex(state, 300, str(user.id))
+    print(state) # LOG
 
+    flow = Flow.from_client_config(
+        {
+            "web": {
+                "client_id": os.getenv("CLIENT_ID"),
+                "client_secret": os.getenv("CLIENT_SECRET"),
+                "redirect_uris": [os.getenv("GOOGLE_REDIRECT_URI")],
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+            }
+        },
+        scopes=SCOPES,
+        state=state
+    )
+    flow.redirect_uri = os.getenv('GOOGLE_REDIRECT_URI')
+
+    auth_url, _ = flow.authorization_url(
+        access_type='offline',
+        include_granted_scopes='true',
+        prompt='consent'
+    )
+
+    return {'url':auth_url}
+
+@router.get('/google/callback')
+def google_callback(state: str, code: Optional[str] = None, error: Optional[str] = None, db: Session = Depends(get_db)):
+    if error:
+        return RedirectResponse(url='http://localhost:5173/tropitutor')
+    
+    user_id = redis_client.get(state)
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail='Not authorized')
+    
+    redis_client.delete(state)
+
+    flow = Flow.from_client_config(
+        {
+            "web": {
+                "client_id": os.getenv("CLIENT_ID"),
+                "client_secret": os.getenv("CLIENT_SECRET"),
+                "redirect_uris": [os.getenv("GOOGLE_REDIRECT_URI")],
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+            }
+        },
+        scopes=SCOPES,
+        state=state
+    )
+    flow.redirect_uri = os.getenv('GOOGLE_REDIRECT_URI')
+
+    try:
+        flow.fetch_token(code=code)
+    except Exception as e:
+        print('Token exchanve failed:', e) # LOG
+        return RedirectResponse(url='http://localhost:5173/tropitutor?status=error')
+    
+    creds = flow.credentials
+    refresh_token = creds.refresh_token
+    access_token = creds.token
+    id_token = creds.id_token
+
+    service = build(serviceName='oauth2', version='v2', credentials=creds)
+    user_info_req = service.userinfo().get()
+    user_info = user_info_req.execute()
+    tutor_gmail = user_info.get('email', None)
+    if not tutor_gmail:
+        print('Could not fetch google email') # LOG
+        return RedirectResponse(url='http://localhost:5173/tropitutor?status=error')
+    
+    user = db.query(User).filter(User.id == int(user_id)).first()
+    if not user or user.role not in [UserRole.TUTOR, UserRole.ADMIN]:
+        raise HTTPException(status_code=401, detail='Not authorized')
+    
+    print('setting user gmail to', tutor_gmail)
+    user.tutor_gmail = tutor_gmail
+    db.commit()
+
+    print(f"Google account connected: {tutor_gmail}")  # LOG
+    return RedirectResponse(url="http://localhost:5173/tropitutor?status=success")
+    
 # @router.get('/google/callback')
 # def google_callback(state: str, db: Session = Depends(get_db), code: Optional[str] = None, error: Optional[str] = None):
 #     print(error)
