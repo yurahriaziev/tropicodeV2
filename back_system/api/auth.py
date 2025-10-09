@@ -167,7 +167,7 @@ def google_callback(state: str, code: Optional[str] = None, error: Optional[str]
     creds = flow.credentials
     refresh_token = creds.refresh_token
     access_token = creds.token
-    id_token = creds.id_token
+    id_token = creds.id_token 
 
     service = build(serviceName='oauth2', version='v2', credentials=creds)
     user_info_req = service.userinfo().get()
@@ -183,42 +183,10 @@ def google_callback(state: str, code: Optional[str] = None, error: Optional[str]
     
     print('setting user gmail to', tutor_gmail)
     user.tutor_gmail = tutor_gmail
+
+    if refresh_token:
+        user.token = encryption.encrypt_token(refresh_token)
     db.commit()
 
     print(f"Google account connected: {tutor_gmail}")  # LOG
     return RedirectResponse(url="http://localhost:5173/tropitutor?status=success")
-    
-# @router.get('/google/callback')
-# def google_callback(state: str, db: Session = Depends(get_db), code: Optional[str] = None, error: Optional[str] = None):
-#     print(error)
-#     print('got here 1A')  # LOG
-#     stored_state = redis_client.get(state)
-
-#     if stored_state is None:
-#         raise HTTPException(status_code=401, detail='Not authorized')
-    
-#     print('got here 2A')  # LOG
-#     user_id = stored_state
-#     redis_client.delete(state)
-
-#     print('got here 3A')  # LOG
-#     user = db.query(User).filter(User.id == user_id).first()
-#     if not user or user.role != UserRole.TUTOR:
-#         raise HTTPException(status_code=401, detail='Not authorized')
-    
-#     tokens = fetch_google_tokens(code)
-#     user_info = get_google_user_info(tokens)
-#     print(tokens) # LOG
-#     print() # LOG
-#     print(user_info) # LOG
-
-#     user.tutor_gmail = user_info['email']
-
-#     if tokens.refresh_token:
-#         print(tokens.refresh_token) # LOG
-#         db_token = encryption.encrypt_token(tokens.refresh_token)
-#         user.token = db_token
-#     db.commit()
-
-#     return RedirectResponse(url='http://localhost:5173/tropitutor')
-

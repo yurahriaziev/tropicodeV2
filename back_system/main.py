@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from db.session import engine, Base
 from datetime import datetime, timezone
-from api import users, auth, tutors
+from api import users, auth, tutors, classes
 from fastapi.middleware.cors import CORSMiddleware
 
 from schemas import ServerStatus
@@ -22,6 +22,7 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(auth.router)
 app.include_router(tutors.router)
+app.include_router(classes.router)
 
 # Base.metadata.create_all(bind=engine)
 

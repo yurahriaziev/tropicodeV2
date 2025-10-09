@@ -22,7 +22,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=True)
     tutor_gmail: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=True)
     hashed_password: Mapped[str] = mapped_column(String, nullable=True)
-    token: Mapped[LargeBinary] = mapped_column(LargeBinary, nullable=True)
+    token: Mapped[str] = mapped_column(String, nullable=True)
 
     login_code: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=True)
 
