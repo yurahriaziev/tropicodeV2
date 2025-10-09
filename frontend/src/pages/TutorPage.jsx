@@ -14,6 +14,7 @@ export default function TutorPage() {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [students, setStudents] = useState([])
     const [googleConnected, setGoogleConnected] = useState(false)
+    const [tutorClasses, setTutorClasses] = useState([])
 
     const handleLogout = () => {
         localStorage.removeItem('token')
@@ -31,9 +32,21 @@ export default function TutorPage() {
                     }
                 })
 
+                const classesResponse = await fetch(`${API_URL}/classes`, {
+                    method:'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+
                 if (!response.ok) {
                     setError('Invalid request')
                     localStorage.removeItem('token')
+                    return
+                }
+
+                if (!classesResponse.ok) {
+                    setError('Error fetching class IDs')
                     return
                 }
 
@@ -43,11 +56,16 @@ export default function TutorPage() {
                 if (data.tutor_gmail) {
                     setGoogleConnected(true)
                 }
+
+                const classData = await classesResponse.json()
+                setTutorClasses(classData)
+                console.log(classData) // LOG
                 console.log(data) // LOG
             } else {
                 setError('Not logged in')
             }
         }
+
 
         fetchTutor()
     }, [])

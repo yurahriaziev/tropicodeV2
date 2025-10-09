@@ -15,6 +15,7 @@ import uuid
 
 import os
 from dotenv import load_dotenv
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 from core import encryption
@@ -119,4 +120,12 @@ def make_class(new_class: ClassCreate, user: User = Depends(get_current_user), d
     except Exception as e:
         log(f"Token decryption failed: {e}", 'error')
         raise HTTPException(status_code=500, detail="Internal server error")
+    
+@router.get("/classes", response_model=List[GoogleClassOut])
+def get_classes(user:User=Depends(get_current_user), db:Session = Depends(get_db)):
+    if user.role not in [UserRole.ADMIN, UserRole.TUTOR]:
+        raise HTTPException(status_code=403, detail='Unauthorized')
+    
+    classes = db.query(GoogleClass).filter(GoogleClass.tutor_id == user.id).all()
+    return classes
     
