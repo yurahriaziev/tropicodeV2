@@ -6,6 +6,7 @@ import NewStudentBtn from "../components/NewStudentBtn"
 import NewStudentPopUp from "../components/NewStudentPopUp"
 import Error from "../components/Error"
 import GoogleAccountBtn from "../components/GoogleAccountBtn"
+import ClassList from "../components/ClassList"
 
 export default function TutorPage() {
     const [error, setError] = useState('')
@@ -32,21 +33,9 @@ export default function TutorPage() {
                     }
                 })
 
-                const classesResponse = await fetch(`${API_URL}/classes`, {
-                    method:'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-
                 if (!response.ok) {
                     setError('Invalid request')
                     localStorage.removeItem('token')
-                    return
-                }
-
-                if (!classesResponse.ok) {
-                    setError('Error fetching class IDs')
                     return
                 }
 
@@ -57,9 +46,6 @@ export default function TutorPage() {
                     setGoogleConnected(true)
                 }
 
-                const classData = await classesResponse.json()
-                setTutorClasses(classData)
-                console.log(classData) // LOG
                 console.log(data) // LOG
             } else {
                 setError('Not logged in')
@@ -178,7 +164,8 @@ export default function TutorPage() {
                 <div className="col-span-4 row-span-5 col-start-3">
                     <div className="bg-white dark:bg-gray-800 p-6 shadow-md">
                         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Upcoming Classes</h3>
-                        <p className="text-gray-600 dark:text-gray-400">No upcoming classes scheduled</p>
+                        <ClassList setError={setError} />
+                        {/* <p className="text-gray-600 dark:text-gray-400">No upcoming classes scheduled</p> */}
                     </div>
                 </div>
                 <div className="row-span-5 col-start-7 col-span-2">
