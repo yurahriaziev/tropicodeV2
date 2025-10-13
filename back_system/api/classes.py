@@ -113,7 +113,7 @@ def make_class(new_class: ClassCreate, user: User = Depends(get_current_user), d
             db.commit()
             db.refresh(new_class_db)
 
-            return {'title':new_class.title, 'start_time':start, 'end_time':end, 'google_meet_link':meet_link}
+            return {'id': new_class_db.id, 'title':new_class.title, 'start_time':start, 'end_time':end, 'google_meet_link':meet_link}
         except Exception as e:
             log(f'Error creating class, {e}', 'error')
             raise HTTPException(status_code=500, detail="Internal server error")
@@ -123,9 +123,12 @@ def make_class(new_class: ClassCreate, user: User = Depends(get_current_user), d
     
 @router.get("/classes", response_model=List[GoogleClassOut])
 def get_classes(user:User=Depends(get_current_user), db:Session = Depends(get_db)):
-    if user.role not in [UserRole.ADMIN, UserRole.TUTOR]:
+    if user.role not in [UserRole.ADMIN, UserRole.TUTOR, UserRole.STUDENT]:
         raise HTTPException(status_code=403, detail='Unauthorized')
     
-    classes = db.query(GoogleClass).filter(GoogleClass.tutor_id == user.id).all()
+    if user.role == UserRole.TUTOR:
+        classes = db.query(GoogleClass).filter(GoogleClass.tutor_id == user.id).all()
+    elif user.role == UserRole.STUDENT:
+        classes = db.query(GoogleClass).filter(GoogleClass.student_id == user.id).all()
     return classes
     

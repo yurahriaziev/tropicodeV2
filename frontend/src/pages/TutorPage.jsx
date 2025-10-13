@@ -15,7 +15,6 @@ export default function TutorPage() {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [students, setStudents] = useState([])
     const [googleConnected, setGoogleConnected] = useState(false)
-    const [tutorClasses, setTutorClasses] = useState([])
 
     const handleLogout = () => {
         localStorage.removeItem('token')

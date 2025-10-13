@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import WelcomeBanner from "./WelcomeBanner";
 import { API_URL } from "../config";
 import IslandActionBar from "./IslandActionBar";
+import StudentClasses from "./StudentClasses";
 
 export default function IslandMainDash() {
     const [studentData, setStudentData] = useState({})
@@ -44,7 +45,7 @@ export default function IslandMainDash() {
         <main className={`min-h-[calc(100vh-75px)] overflow-hidden bg-green-50 dark:bg-[#1f1d25]`}>
             <WelcomeBanner name={studentData.first} />
             <IslandActionBar activeTab={activeTab} setActiveTab={setActiveTab} />
-            
+            <StudentClasses setError={setError} />
         </main>
     )
 }
