@@ -40,6 +40,25 @@ export default function ClassList({ setError }) {
         fetchClasses()
     }, [setError])
 
+    function formatClassTime(isoString) {
+        if (!isoString) return ""
+
+        const date = new Date(isoString)
+
+        const formattedDate = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+        })
+
+        const formattedTime = date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit'
+        })
+
+        return `${formattedDate} - ${formattedTime}`
+    }
+
     if (loading) {
         return (
           <div className="flex justify-center items-center py-10">
