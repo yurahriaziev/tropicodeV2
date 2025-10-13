@@ -11,7 +11,36 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       
-      - name: Copy build to EC2 and run deploy script
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node_version: 18
+        
+      - name: Install dependencies and build frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Copy frontend build to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "frontend/dist/*"
+          target: "/var/www/frontend/"
+
+      - name: Restart Nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo systemctl restart nginx
+
+      - name: Update backend containers
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
