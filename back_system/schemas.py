@@ -53,6 +53,7 @@ class ClassCreate(BaseModel):
     student_id: int
 
 class GoogleClassOut(BaseModel):
+    id: int
     title: str
     start_time: datetime
     end_time: datetime
