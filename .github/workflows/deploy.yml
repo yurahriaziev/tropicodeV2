@@ -51,4 +51,4 @@ jobs:
             cd ~/tropicodeV2
             git fetch origin main
             git reset --hard origin/main
-            sudo docker-compose -f back_system/docker-compose.yml up --build -d
+            sudo docker-compose up --build -d
