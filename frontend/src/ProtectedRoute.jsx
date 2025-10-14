@@ -16,7 +16,6 @@ export default function ProtectedRoute({ children, loginPath, type }) {
     useEffect(() => {
         const getRole = async() => {
             const token = localStorage.getItem('token')
-            console.log(token)
 
             if (!token) {
                 setAuthStatus('unauthenticated')
@@ -44,7 +43,6 @@ export default function ProtectedRoute({ children, loginPath, type }) {
                     return
                 }
             } catch(error) {
-                console.error("Authentication check failed:", error) //LOG
                 setAuthStatus('unauthenticated')
             }
         }
@@ -52,7 +50,6 @@ export default function ProtectedRoute({ children, loginPath, type }) {
         getRole()
     }, [type])
 
-    console.log(authStatus)
     if (authStatus === 'loading') {
         return <LoadingSpinner />
     }

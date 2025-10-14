@@ -45,7 +45,6 @@ export default function TutorPage() {
                     setGoogleConnected(true)
                 }
 
-                console.log(data) // LOG
             } else {
                 setError('Not logged in')
             }
@@ -56,10 +55,8 @@ export default function TutorPage() {
     }, [])
 
     const handleCreateStudent = async(student) => {
-        console.log('new student') // LOG
 
         setError('')
-        console.log(student)
 
         if (!student.first || !student.last || !student.age) {
             setError('Fill out all spots')
@@ -84,7 +81,6 @@ export default function TutorPage() {
 
             if (!response.ok) {
                 setError('Error creating student. Try again')
-                console.log(response.status, response.statusText) // LOG
             }
 
             const data = await response.json()
@@ -92,7 +88,6 @@ export default function TutorPage() {
             setIsModalOpen(false)
         } catch (error) {
             setError('Server error. Try again')
-            console.log(error) // LOG
         }
     }
 
@@ -113,8 +108,7 @@ export default function TutorPage() {
                 } else {
                     const studentsData = await studentsResponse.json()
                     setStudents(studentsData)
-                    console.log(studentsData)
-                }
+                    }
             } else {
                 setError('Not logged in')
             }

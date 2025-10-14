@@ -48,6 +48,31 @@ def get_db():
     finally:
         db.close()
 
+def get_tropicode_calendar(creds):
+    service = build('calendar', 'v3', credentials=creds)
+
+    calendar_list = service.calendarList().list().execute()
+    calendars = calendar_list.get('items', [])
+    log(f'retrived user calendar list, {calendars}', 'log')
+
+    for cal in calendars:
+        if cal.get('summary') == 'Tropicode':
+            log('found Tropicode calendar', 'log')
+            return cal['id']
+        
+    calendar_body = {
+        'summary':'Tropicode',
+        'timeZone':'America/New_York'
+    }
+    try:
+        new_calendar = service.calendars().insert(body=calendar_body).execute()
+        service.calendarList().insert(body={'id':new_calendar['id']}).execute()
+        log('added new Tropicode calendar to user', 'log')
+        return new_calendar['id']
+    except Exception as e:
+        log(f'error adding new Tropicode calendar {e}', 'error')
+        raise HTTPException(status_code=500, detail='Failed to create Tropicode calendar')
+
 @router.post("/classes", response_model=GoogleClassOut)
 def make_class(new_class: ClassCreate, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     if user.role not in (UserRole.ADMIN, UserRole.TUTOR):
@@ -81,7 +106,6 @@ def make_class(new_class: ClassCreate, user: User = Depends(get_current_user), d
             'summary': new_class.title,
             'start': {'dateTime': start_iso, 'timeZone':'America/New_York'},
             'end': {'dateTime': end_iso, 'timeZone':'America/New_York'},
-            'attendees': [{'email':user.tutor_gmail}],
             'conferenceData': {
                 'createRequest': {
                     'requestId':str(uuid.uuid4()),
@@ -93,7 +117,7 @@ def make_class(new_class: ClassCreate, user: User = Depends(get_current_user), d
 
         try:
             service = build(serviceName='calendar', version='v3', credentials=creds, cache_discovery=False)
-            created_class = service.events().insert(calendarId='primary', body=google_class, conferenceDataVersion=1).execute()
+            created_class = service.events().insert(calendarId=get_tropicode_calendar(creds), body=google_class, conferenceDataVersion=1).execute()
             log('created_class made with google api', 'log')
 
             start = created_class['start']['dateTime']

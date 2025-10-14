@@ -22,15 +22,12 @@ export default function ClassList({ setError }) {
 
                 if (!response.ok) {
                     const data = await response.json()
-                    console.log('Unable to fetch classes') // lOG
                     return
                 }
 
                 const data = await response.json()
-                console.log("Fetched classes", data) // LOG
                 setClasses(data)
             } catch (error) {
-                console.log(error) // LOG
                 setError('Internal server error')
             } finally {
                 setLoading(false)
