@@ -37,6 +37,7 @@ def get_db():
 
 router = APIRouter(prefix='/auth')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/token')
+frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
 
 def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(get_db)):
     try:
@@ -134,7 +135,7 @@ def google_login(user: User = Depends(get_current_user)):
 @router.get('/google/callback')
 def google_callback(state: str, code: Optional[str] = None, error: Optional[str] = None, db: Session = Depends(get_db)):
     if error:
-        return RedirectResponse(url='http://localhost:5173/tropitutor')
+        return RedirectResponse(url=f'{frontend_url}/tropitutor')
     
     user_id = redis_client.get(state)
 
@@ -162,7 +163,7 @@ def google_callback(state: str, code: Optional[str] = None, error: Optional[str]
         flow.fetch_token(code=code)
     except Exception as e:
         print('Token exchanve failed:', e) # LOG
-        return RedirectResponse(url='http://localhost:5173/tropitutor?status=error')
+        return RedirectResponse(url=f'{frontend_url}/tropitutor?status=error')
     
     creds = flow.credentials
     refresh_token = creds.refresh_token
@@ -175,7 +176,7 @@ def google_callback(state: str, code: Optional[str] = None, error: Optional[str]
     tutor_gmail = user_info.get('email', None)
     if not tutor_gmail:
         print('Could not fetch google email') # LOG
-        return RedirectResponse(url='http://localhost:5173/tropitutor?status=error')
+        return RedirectResponse(url=f'{frontend_url}/tropitutor?status=error')
     
     user = db.query(User).filter(User.id == int(user_id)).first()
     if not user or user.role not in [UserRole.TUTOR, UserRole.ADMIN]:
@@ -189,4 +190,4 @@ def google_callback(state: str, code: Optional[str] = None, error: Optional[str]
     db.commit()
 
     print(f"Google account connected: {tutor_gmail}")  # LOG
-    return RedirectResponse(url="http://localhost:5173/tropitutor?status=success")
+    return RedirectResponse(url=f"{frontend_url}/tropitutor?status=success")
