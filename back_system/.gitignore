@@ -5,3 +5,6 @@ __pycache__/
 credentials/
 tropicode-server.pem
 .env.prod
+commands.txt
+core/logs
+*.log
