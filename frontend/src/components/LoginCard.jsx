@@ -39,41 +39,43 @@ export default function LoginCard() {
         console.log('Student login attemp') // LOG
         setError('')
 
-        if (!studentCode) {
-            setError('Enter student code please')
-            return
-        }
-
-        if (studentCode.length != 4) {
-            setError('Incorrect student code')
-            return
-        }
-
-        try {
-            const response = await fetch(`${API_URL}/auth/student/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify({
-                    'code':studentCode
-                })
-            })
-
-            if (!response.ok) {
-                setError('Invalid Code')
+        if (accountType === 'student') {
+            if (!studentCode) {
+                setError('Enter student code please')
                 return
             }
-
-            const data = await response.json()
-            const token = data.access_token
-
-            console.log('Student login successful', token) // LOG
-            localStorage.setItem('token', token)
-            navigate('/island')
-        } catch(error) {
-            setError('Server error. Try again later')
-            console.log(error)
+    
+            if (studentCode.length != 4) {
+                setError('Incorrect student code')
+                return
+            }
+    
+            try {
+                const response = await fetch(`${API_URL}/auth/student/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify({
+                        'code':studentCode
+                    })
+                })
+    
+                if (!response.ok) {
+                    setError('Invalid Code')
+                    return
+                }
+    
+                const data = await response.json()
+                const token = data.access_token
+    
+                console.log('Student login successful', token) // LOG
+                localStorage.setItem('token', token)
+                navigate('/island')
+            } catch(error) {
+                setError('Server error. Try again later')
+                console.log(error)
+            }
         }
     }
 
@@ -116,7 +118,7 @@ export default function LoginCard() {
                         />
                     ) : (
                         <>
-                            <input
+                            {/* <input
                                 type="email"
                                 placeholder="Enter your parent email"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -127,17 +129,20 @@ export default function LoginCard() {
                                 placeholder="Enter your password"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                                 required
-                            />
+                            /> */}
+                            <div className="flex items-center justify-center h-full">
+                                <p className="italic text-gray-500 text-center">Coming soon...</p>
+                            </div>
                         </>
                     )}
 
                     {!isStudent && (
                         <>
                             <div className="flex items-center justify-between text-sm">
-                                <label className="flex items-center">
-                                {/* <input type="checkbox" className="mr-2" /> Remember me */}
+                                {/* <label className="flex items-center">
+                                    <input type="checkbox" className="mr-2" /> Remember me
                                 </label>
-                                <a href="#" className="text-purple-600 hover:underline">Forgot password?</a>
+                                <a href="#" className="text-purple-600 hover:underline">Forgot password?</a> */}
                             </div>
                             {/* <p className="text-center text-sm text-gray-600 mt-6">
                             Don't have an account? <a href="#" className="text-purple-600 hover:underline">Sign up here</a>
