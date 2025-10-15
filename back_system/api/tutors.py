@@ -8,6 +8,7 @@ import random
 
 from db.session import SessionLocal
 from sqlalchemy.orm import Session
+from core.logger import logger
 
 router = APIRouter()
 
@@ -21,6 +22,7 @@ def get_db():
 @router.post('/tutors/student', response_model=UserOut, tags=['Tutors'])
 def student(student:StudentCreate, db: Session = Depends(get_db), user:User = Depends(get_current_user)):
     if user.role not in [UserRole.TUTOR, UserRole.ADMIN]:
+        logger.warning(f"[STUDENT_CREATE] Unauthorized access attempt by user_id={user.id} ({user.role})")
         raise HTTPException(status_code=403, detail='Permission Denied')
     
     while True:
@@ -41,11 +43,14 @@ def student(student:StudentCreate, db: Session = Depends(get_db), user:User = De
     db.add(db_student)
     db.commit()
     db.refresh(db_student)
+
+    logger.info(f"[{user.role}] user_id={user.id} | route=/tutors/student | action=Created new student '{student.first} {student.last}' (id={db_student.id})")
     return db_student
 
 @router.get("/tutors/me/students", response_model=List[UserOut], tags=['Tutors'])
 def get_students(user:User=Depends(get_current_user), db: Session=Depends(get_db)):
     if user.role not in [UserRole.ADMIN, UserRole.TUTOR]:
+        logger.warning(f"[STUDENTS_FETCH] Unauthorized access attempt by user_id={user.id} ({user.role})")
         raise HTTPException(status_code=403, detail='Permission Denied')
     
     students = db.query(User).filter(User.tutor_id == user.id).all()

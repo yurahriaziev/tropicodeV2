@@ -8,6 +8,7 @@ from db.session import SessionLocal, engine
 from models.user import User, UserRole
 import schemas
 from core.security import get_password_hash
+from core.logger import logger
 from .auth import get_current_user
 
 router = APIRouter()
@@ -25,6 +26,7 @@ def create_user(user:schemas.UserCreate, db: Session = Depends(get_db)):
     add new user
     '''
     if user.email and db.query(User).filter(User.email == user.email).first():
+        logger.warning(f"[USER_CREATE] Attempted to create user with existing email: {user.email}")
         raise HTTPException(status_code=400, detail='Email already in use')
     
     hashed_p = None
@@ -55,6 +57,7 @@ def create_user(user:schemas.UserCreate, db: Session = Depends(get_db)):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    logger.info(f"[USER_CREATE] Created new user '{user.first} {user.last}' (id={db_user.id}, role={user.role})")
     return db_user
 
 @router.get("/users/", response_model=List[schemas.UserOut], tags=['Users'])

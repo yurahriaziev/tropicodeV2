@@ -19,6 +19,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 from core import encryption
+from core.logger import logger
 
 load_dotenv()
 
@@ -76,9 +77,11 @@ def get_tropicode_calendar(creds):
 @router.post("/classes", response_model=GoogleClassOut)
 def make_class(new_class: ClassCreate, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     if user.role not in (UserRole.ADMIN, UserRole.TUTOR):
+        logger.warning(f"[CLASS] Unauthorized access attempt by user_id={user.id} ({user.role})")
         raise HTTPException(status_code=403, detail='Unauthorized')
     
     if not user.tutor_gmail or not user.token:
+        logger.warning(f"[CLASS] user_id={user.id} attempted to create class without connected Google account")
         raise HTTPException(status_code=401, detail="Please connect Google Account")
     
     try:
@@ -137,17 +140,19 @@ def make_class(new_class: ClassCreate, user: User = Depends(get_current_user), d
             db.commit()
             db.refresh(new_class_db)
 
+            logger.info(f"[{user.role}] user_id={user.id} | route=/classes | action=Created class '{new_class.title}' with student_id={new_class.student_id}")
             return {'id': new_class_db.id, 'title':new_class.title, 'start_time':start, 'end_time':end, 'google_meet_link':meet_link}
         except Exception as e:
-            log(f'Error creating class, {e}', 'error')
+            logger.error(f"[CLASS] Google API event creation failed for user_id={user.id}: {e}")
             raise HTTPException(status_code=500, detail="Internal server error")
     except Exception as e:
-        log(f"Token decryption failed: {e}", 'error')
+        logger.error(f"[CLASS] Token decryption failed for user_id={user.id}: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
     
 @router.get("/classes", response_model=List[GoogleClassOut])
 def get_classes(user:User=Depends(get_current_user), db:Session = Depends(get_db)):
     if user.role not in [UserRole.ADMIN, UserRole.TUTOR, UserRole.STUDENT]:
+        logger.warning(f"[CLASS] Unauthorized access attempt by user_id={user.id} ({user.role})")
         raise HTTPException(status_code=403, detail='Unauthorized')
     
     if user.role == UserRole.TUTOR:

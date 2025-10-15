@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from core import config, encryption
+from core.logger import logger
 import secrets
 
 from google_auth_oauthlib.flow import Flow
@@ -68,10 +69,12 @@ def get_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:Sessio
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
+        logger.warning(f"[LOGIN] Invalid email login attempt: {email}")
         raise HTTPException(status_code=401, detail='Incorrent Email or Password')
     
     verify = verify_pass(password, user.hashed_password)
     if not verify:
+        logger.warning(f"[LOGIN] Incorrect password for user_id={user.id}")
         raise HTTPException(status_code=401, detail='Incorrent Email or Password')
     
     payload = {
@@ -84,6 +87,7 @@ def get_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:Sessio
 
     acc_t = jwt.encode(payload, config.SECURITY_SECRET_KEY, config.ALGORITHM)
 
+    logger.info(f"[{user.role}] user_id={user.id} | route=/token | action=Successful login")
     return {'access_token':acc_t, 'token_type':'bearer'}
 
 @router.post('/student/login', response_model=Token)
@@ -91,6 +95,7 @@ def student_login(s: StudentLogin, db:Session = Depends(get_db)):
     student = db.query(User).filter(User.login_code == s.code).first()
 
     if not student or student.role != UserRole.STUDENT:
+        logger.warning(f'[LOGIN] Invalid student code used: {s.code}')
         raise HTTPException(status_code=401, detail='Invalid Code')
 
     payload = {
@@ -102,16 +107,17 @@ def student_login(s: StudentLogin, db:Session = Depends(get_db)):
     payload['exp'] = expiration
     acc_token = jwt.encode(payload, config.SECURITY_SECRET_KEY, config.ALGORITHM)
 
+    logger.info(f'[STUDENT] user_id={student.id} logged in')
     return {'access_token':acc_token, 'token_type':'bearer'}
 
 @router.get('/google/login')
 def google_login(user: User = Depends(get_current_user)):
     if not user or user.role not in [UserRole.ADMIN, UserRole.TUTOR]:
+        logger.warning(f"[OAUTH] Unauthorized access attempt by user_id={user.id if user else 'unknown'}")
         raise HTTPException(status_code=401, detail='Not authorized')
     
     state = secrets.token_urlsafe(16)
     redis_client.setex(state, 300, str(user.id))
-    print(state) # LOG
 
     flow = Flow.from_client_config(
         {
@@ -134,16 +140,19 @@ def google_login(user: User = Depends(get_current_user)):
         prompt='consent'
     )
 
+    logger.info(f"[{user.role}] user_id={user.id}")
     return {'url':auth_url}
 
 @router.get('/google/callback')
 def google_callback(state: str, code: Optional[str] = None, error: Optional[str] = None, db: Session = Depends(get_db)):
     if error:
+        logger.warning(f"[OAUTH] Google callback returned error param for state={state}")
         return RedirectResponse(url=f'{frontend_url}/tropitutor')
     
     user_id = redis_client.get(state)
 
     if not user_id:
+        logger.warning(f"[OAUTH] Missing or expired state token: {state}")
         raise HTTPException(status_code=401, detail='Not authorized')
     
     redis_client.delete(state)
@@ -166,7 +175,7 @@ def google_callback(state: str, code: Optional[str] = None, error: Optional[str]
     try:
         flow.fetch_token(code=code)
     except Exception as e:
-        print('Token exchanve failed:', e) # LOG
+        logger.error(f"[OAUTH] Token exchange failed for state={state}: {e}")
         return RedirectResponse(url=f'{frontend_url}/tropitutor?status=error')
     
     creds = flow.credentials
@@ -179,19 +188,19 @@ def google_callback(state: str, code: Optional[str] = None, error: Optional[str]
     user_info = user_info_req.execute()
     tutor_gmail = user_info.get('email', None)
     if not tutor_gmail:
-        print('Could not fetch google email') # LOG
+        logger.error(f"[OAUTH] Could not fetch Gmail from Google response for user_id={user_id}")
         return RedirectResponse(url=f'{frontend_url}/tropitutor?status=error')
     
     user = db.query(User).filter(User.id == int(user_id)).first()
     if not user or user.role not in [UserRole.TUTOR, UserRole.ADMIN]:
+        logger.warning(f"[OAUTH] Unauthorized user_id={user_id} or invalid role during callback")
         raise HTTPException(status_code=401, detail='Not authorized')
     
-    print('setting user gmail to', tutor_gmail)
     user.tutor_gmail = tutor_gmail
 
     if refresh_token:
         user.token = encryption.encrypt_token(refresh_token)
     db.commit()
 
-    print(f"Google account connected: {tutor_gmail}")  # LOG
+    logger.info(f"[{user.role}] user_id={user.id} Google account linked ({tutor_gmail})")
     return RedirectResponse(url=f"{frontend_url}/tropitutor?status=success")
