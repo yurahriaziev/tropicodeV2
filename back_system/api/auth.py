@@ -60,6 +60,8 @@ def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(ge
 def get_admin_user(user: User = Depends(get_current_user)):
     if user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail='Access denied.')
+    
+    return user
 
 @router.post("/token", response_model=Token, tags=['Auth'])
 def get_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:Session = Depends(get_db)):

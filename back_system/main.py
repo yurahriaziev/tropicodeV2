@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from db.session import engine, Base
 from datetime import datetime, timezone
-from api import users, auth, tutors, classes
+from api import users, auth, tutors, classes, admin
 from fastapi.middleware.cors import CORSMiddleware
 
 from schemas import ServerStatus
@@ -24,6 +24,7 @@ app.include_router(users.router)
 app.include_router(auth.router)
 app.include_router(tutors.router)
 app.include_router(classes.router)
+app.include_router(admin.router)
 
 logger.info('Logger test: Tropicode API has started successfully.')
 logger.warning("Logger test: This is a sample warning.")

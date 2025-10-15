@@ -11,7 +11,6 @@ class UserCreate(BaseModel):
     role: UserRole
 
     email: Optional[EmailStr] = None
-    # hash password later
     password: Optional[str] = None
 
     login_code: Optional[str] = None
@@ -25,7 +24,6 @@ class UserOut(BaseModel):
     email: Optional[EmailStr] = None
     login_code: Optional[str] = None
     is_active: bool
-    # hashed_password: Optional[str] = None
     tutor_gmail: Optional[str] = None
 
     class Config:
@@ -58,3 +56,14 @@ class GoogleClassOut(BaseModel):
     start_time: datetime
     end_time: datetime
     google_meet_link: str
+
+class AdminActivityOut(BaseModel):
+    id: int
+    admin_id: int
+    action: str
+    target: Optional[str] = None
+    details: Optional[str | dict] = None
+    timestamp: datetime
+
+    class Config:
+        orm_mode = True
