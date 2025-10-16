@@ -5,6 +5,7 @@ export default function StudentCard({ student, setError }) {
     const [isFlipped, setIsFlipped] = useState(false)
     const [title, setTitle] = useState('')
     const [startTime, setStartTime] = useState('')
+    console.log(student)
 
     const handleScheduleSubmit = async(e) => {
         e.preventDefault()
@@ -68,24 +69,31 @@ export default function StudentCard({ student, setError }) {
             <div className="absolute w-full h-full bg-white dark:bg-gray-800 shadow-md p-6 border-b-4 border-green-500 [backface-visibility:hidden]">
                 <div className="flex flex-col h-full">
                     <div>
-                    <h3 className="text-3xl font-bold text-gray-800 dark:text-white truncate">
-                        {student ? student.first : 'Student'}
-                    </h3>
-                    <hr className="border-gray-200 dark:border-gray-600 my-2" />
+                        <h3 className="text-3xl font-bold text-gray-800 dark:text-white truncate">
+                            {student ? student.first : 'Student'}
+                        </h3>
+
+                        {student?.login_code && (
+                            <p className="text-sm font-mono text-gray-500 dark:text-gray-400 mt-1">
+                                Code: <span className="text-gray-800 dark:text-gray-200">{student.login_code}</span>
+                            </p>
+                        )}
+                        
+                        <hr className="border-gray-200 dark:border-gray-600 my-2" />
                     </div>
                     <div className="flex-grow">
-                    {/* Placeholder for other info */}
-                    </div>
-                    <div className="flex justify-between items-center">
-                    <button className={buttonClasses}>
-                        View Student
-                    </button>
-                    <button
-                        onClick={() => setIsFlipped(true)}
-                        className={buttonClasses}
-                    >
-                        Schedule Class
-                    </button>
+                        {/* Placeholder for other info */}
+                        </div>
+                        <div className="flex justify-between items-center">
+                        <button className={buttonClasses}>
+                            View Student
+                        </button>
+                        <button
+                            onClick={() => setIsFlipped(true)}
+                            className={buttonClasses}
+                        >
+                            Schedule Class
+                        </button>
                     </div>
                 </div>
             </div>

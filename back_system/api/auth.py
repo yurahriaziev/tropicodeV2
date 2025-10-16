@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 
 from db.session import SessionLocal
 from models.user import User, UserRole
-from core.security import verify_pass
-from schemas import Token, StudentLogin, Optional
+from core.security import verify_pass, get_password_hash
+from schemas import Token, StudentLogin, Optional, UserCreate
 from db.redis_client import redis_client
 
 from datetime import timedelta, datetime, timezone
@@ -206,3 +206,41 @@ def google_callback(state: str, code: Optional[str] = None, error: Optional[str]
 
     logger.info(f"[{user.role}] user_id={user.id} Google account linked ({tutor_gmail})")
     return RedirectResponse(url=f"{frontend_url}/tropitutor?status=success")
+
+@router.get('/onboard/verify')
+def verify_onboard_link(token:str):
+    if not redis_client.get(f'onboard:{token}'):
+        raise HTTPException(status_code=400, detail='Invalid or Expired link')
+    
+    return {'valid':True}
+
+@router.post('/onboard/complete')
+def create_new_tutor_from_onboard(user:UserCreate, db:Session = Depends(get_db)):
+    role = redis_client.get(f"onboard:{user.token}")
+    if not role or role.decode() != "TUTOR":
+        raise HTTPException(status_code=400, detail="Invalid or expired onboarding link")
+    
+    if user.email and db.query(User).filter(User.email == user.email).first():
+        logger.warning('')
+        raise HTTPException(status_code=400, detail='Email already in use')
+
+    if not user.email or not user.password:
+        logger.warning()
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    
+    hashed_p = get_password_hash(user.password)
+
+    new_tutor = User(
+        first=user.first,
+        last=user.last,
+        age=user.age,
+        role=UserRole.TUTOR,
+        email=user.email,
+        hashed_password=hashed_p
+    )
+
+    db.add(new_tutor)
+    db.commit()
+    db.refresh(new_tutor)
+    logger.info(f"[USER_CREATE] Created new user '{user.first} {user.last}' (id={new_tutor.id}, role={user.role})")
+    return RedirectResponse(url=f'{frontend_url}/tropitutor/login')
