@@ -8,6 +8,7 @@ import AdminLogin from "./pages/AdminLogin";
 import TutorLogin from "./pages/TutorLogin";
 import TutorPage from "./pages/TutorPage";
 import ProtectedRoute from "./ProtectedRoute";
+import TutorOnboarding from "./pages/TutorOnboarding";
 
 export default function App() {
   return (
@@ -24,7 +25,8 @@ export default function App() {
         <Route path="/admin" element={<ProtectedRoute loginPath={'/admin/login'} type={'admin'}><AdminPage /></ProtectedRoute>} />
 
         <Route path="/tropitutor/login" element={<TutorLogin />} />
-        <Route path="/tropitutor" element={<ProtectedRoute loginPath={'/tropitutor/login'} type={'tutor'}><TutorPage /></ProtectedRoute>} />
+        <Route path="/tropitutor" element={<ProtectedRoute loginPath={'/tropitutor/login'} type={'tutor'}><TutorPage /></ProtectedRoute>} /> 
+        <Route path="/onboard" element={<TutorOnboarding />} />
       </Routes>
     </Router>
     

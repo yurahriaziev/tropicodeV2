@@ -8,7 +8,7 @@ class UserCreate(BaseModel):
     first: str
     last: str
     age: int
-    role: UserRole
+    role: Optional[UserRole] = None
 
     email: Optional[EmailStr] = None
     password: Optional[str] = None

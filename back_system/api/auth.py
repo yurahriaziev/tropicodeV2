@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Request
+from fastapi import APIRouter, HTTPException, Depends, Body, Query
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -8,6 +8,7 @@ from models.user import User, UserRole
 from core.security import verify_pass, get_password_hash
 from schemas import Token, StudentLogin, Optional, UserCreate
 from db.redis_client import redis_client
+from core.admin_logger import log_admin_action
 
 from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
@@ -212,35 +213,45 @@ def verify_onboard_link(token:str):
     if not redis_client.get(f'onboard:{token}'):
         raise HTTPException(status_code=400, detail='Invalid or Expired link')
     
-    return {'valid':True}
+    return {'valid':True, 'token':token}
 
 @router.post('/onboard/complete')
-def create_new_tutor_from_onboard(user:UserCreate, db:Session = Depends(get_db)):
-    role = redis_client.get(f"onboard:{user.token}")
-    if not role or role.decode() != "TUTOR":
-        raise HTTPException(status_code=400, detail="Invalid or expired onboarding link")
-    
-    if user.email and db.query(User).filter(User.email == user.email).first():
-        logger.warning('')
-        raise HTTPException(status_code=400, detail='Email already in use')
+def create_new_tutor_from_onboard(token:str, aid:int, user:UserCreate, db:Session = Depends(get_db)):
+    try:
+        redis_client.delete(f"onboard:{token}")
+        
+        if user.email and db.query(User).filter(User.email == user.email).first():
+            logger.warning(f"[ONBOARD] Duplicate email attempted: {user.email}")
+            raise HTTPException(status_code=400, detail='Email already in use')
 
-    if not user.email or not user.password:
-        logger.warning()
-        raise HTTPException(status_code=400, detail="Email and password are required")
-    
-    hashed_p = get_password_hash(user.password)
+        if not user.email or not user.password:
+            logger.warning(f"[ONBOARD] Missing email or password for onboarding tutor creation")
+            raise HTTPException(status_code=400, detail="Email and password are required")
+        
+        hashed_p = get_password_hash(user.password)
 
-    new_tutor = User(
-        first=user.first,
-        last=user.last,
-        age=user.age,
-        role=UserRole.TUTOR,
-        email=user.email,
-        hashed_password=hashed_p
-    )
+        new_tutor = User(
+            first=user.first,
+            last=user.last,
+            age=user.age,
+            role=UserRole.TUTOR,
+            email=user.email,
+            hashed_password=hashed_p,
+        )
 
-    db.add(new_tutor)
-    db.commit()
-    db.refresh(new_tutor)
-    logger.info(f"[USER_CREATE] Created new user '{user.first} {user.last}' (id={new_tutor.id}, role={user.role})")
-    return RedirectResponse(url=f'{frontend_url}/tropitutor/login')
+        db.add(new_tutor)
+        db.commit()
+        db.refresh(new_tutor)
+
+        log_admin_action(
+            aid,
+            "CREATE_TUTOR_ACCOUNT",
+            target=str(new_tutor.id),
+            details=f"Tutor {new_tutor.first} {new_tutor.last} ({new_tutor.email}) created via onboarding",
+            db=db
+        )
+        logger.info(f"[USER_CREATE] Created new user '{user.first} {user.last}' (id={new_tutor.id}, role={user.role})")
+        return {'success': True, 'redirect': f"{frontend_url}/tropitutor/login"}
+    except Exception as e:
+        logger.error(f"[ONBOARD_ERROR] {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))

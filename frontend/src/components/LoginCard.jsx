@@ -69,7 +69,6 @@ export default function LoginCard() {
                 const data = await response.json()
                 const token = data.access_token
     
-                console.log('Student login successful', token) // LOG
                 localStorage.setItem('token', token)
                 navigate('/island')
             } catch(error) {

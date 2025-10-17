@@ -67,7 +67,7 @@ def generate_onboarding_link(admin: User = Depends(get_admin_user), db: Session 
     token = secrets.token_urlsafe(32)
     redis_client.setex(f'onboard:{token}', 86400, 'TUTOR')
 
-    tutor_link = f'{frontend_url}/onboard?t={token}'
+    tutor_link = f'{frontend_url}/onboard?t={token}&aid={admin.id}'
 
     log_admin_action(admin.id, 'GENERATE_TUTOR_LINK', details=tutor_link, db=db)
     logger.info(f"[ADMIN] user_id={admin.id} | route=/api/admin/onboarding-link | action=Generated tutor link")

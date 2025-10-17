@@ -11,7 +11,6 @@ export default function TutorLogin() {
 
     const handleSubmit = async(e) => {
         e.preventDefault()
-        console.log('Login attempt') // LOG
         setError('')
 
         if (!email || !password) {
@@ -41,7 +40,6 @@ export default function TutorLogin() {
             const data = await response.json()
             const token = data.access_token
 
-            console.log('Tutor login successful', token)
             localStorage.setItem('token', token)
             navigate('/tropitutor')
         } catch(error) {
