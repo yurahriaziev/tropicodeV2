@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { API_URL } from "../config"
 import { useNavigate } from "react-router-dom"
 import AdminSideBar from "../components/AdminSidebar"
+import AdminDashboard from "../components/AdminDashboard"
 
 export default function AdminPage() {
   const [error, setError] = useState('')
@@ -69,17 +70,18 @@ export default function AdminPage() {
         <AdminSideBar activeTab={activeTab} setActiveTab={setActiveTab} adminName={adminData.first + " " + adminData.last} />
         <main className="flex-1 p-6 overflow-y-auto">
           <h2 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 mb-6">
-            {activeTab === "dashboard" && "Dashboard"}
+            {activeTab === "dashboard" && (
+              <>
+                <p className="my-4">Dashboard</p>
+                <AdminDashboard />
+              </>
+              )}
             {activeTab === "activity" && "Account Activity"}
             {activeTab === "logs" && "Server Logs"}
             {activeTab === "messages" && "Messages"}
             {activeTab === "newAccount" && "New Account"}
             {activeTab === "generateLink" && "Generate Link"}
           </h2>
-
-          <div className="text-gray-600 dark:text-gray-400">
-            Coming soon: {activeTab} section.
-          </div>
         </main>
       </div>
     </div>
