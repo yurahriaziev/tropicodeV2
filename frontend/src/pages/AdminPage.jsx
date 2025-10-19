@@ -3,6 +3,8 @@ import { API_URL } from "../config"
 import { useNavigate } from "react-router-dom"
 import AdminSideBar from "../components/AdminSidebar"
 import AdminDashboard from "../components/AdminDashboard"
+import AdminActivity from "../components/AdminActivity"
+import AdminLogs from "../components/AdminLogs"
 
 export default function AdminPage() {
   const [error, setError] = useState('')
@@ -76,11 +78,34 @@ export default function AdminPage() {
                 <AdminDashboard />
               </>
               )}
-            {activeTab === "activity" && "Account Activity"}
-            {activeTab === "logs" && "Server Logs"}
-            {activeTab === "messages" && "Messages"}
-            {activeTab === "newAccount" && "New Account"}
-            {activeTab === "generateLink" && "Generate Link"}
+            {activeTab === "activity" && (
+              <>
+              <p className="my-4">Activity</p>
+              <AdminActivity />
+              </>
+            )}
+            {activeTab === "logs" && (
+              <>
+                <p className="my-4">Logs</p>
+                <p className="">Comming soon...</p>
+                {/* <AdminLogs /> */}
+              </>
+            )}
+            {activeTab === "messages" && (
+              <>
+                <p className="my-4">Messages</p>
+              </>
+            )}
+            {activeTab === "newAccount" && (
+              <>
+                <p className="my-4">New user</p>
+              </>
+            )}
+            {activeTab === "generateLink" && (
+              <>
+                <p className="my-4">Tutor onboarding</p>
+              </>
+            )}
           </h2>
         </main>
       </div>

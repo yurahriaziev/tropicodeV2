@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { API_URL } from "../config"
-import { Users, UserCheck, LineChart } from "lucide-react";
+import { Users, UserCheck, GraduationCap } from "lucide-react";
 
 export default function AdminDashboard() {
     const [error, setError] = useState('')
@@ -74,7 +74,7 @@ export default function AdminDashboard() {
                 <StatCard
                     title="Active Students"
                     value={stats.total_students}
-                    icon={<LineChart className="h-6 w-6 text-gray-300" />}
+                    icon={<GraduationCap className="h-6 w-6 text-gray-300" />}
                 />
             </div>
         </>
