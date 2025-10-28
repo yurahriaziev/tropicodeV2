@@ -5,6 +5,7 @@ import AdminSideBar from "../components/AdminSidebar"
 import AdminDashboard from "../components/AdminDashboard"
 import AdminActivity from "../components/AdminActivity"
 import AdminLogs from "../components/AdminLogs"
+import AdminTutorOnboarding from "../components/AdminTutorOnboarding"
 
 export default function AdminPage() {
   const [error, setError] = useState('')
@@ -104,6 +105,7 @@ export default function AdminPage() {
             {activeTab === "generateLink" && (
               <>
                 <p className="my-4">Tutor onboarding</p>
+                <AdminTutorOnboarding />
               </>
             )}
           </h2>
