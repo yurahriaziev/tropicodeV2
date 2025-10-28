@@ -95,6 +95,7 @@ export default function AdminPage() {
             {activeTab === "messages" && (
               <>
                 <p className="my-4">Messages</p>
+                <p className="">Comming soon...</p>
               </>
             )}
             {activeTab === "newAccount" && (
