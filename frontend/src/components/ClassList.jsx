@@ -94,8 +94,7 @@ export default function ClassList({ setError }) {
                         </a>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
-                        {new Date(c.start_time).toLocaleString()} —{" "}
-                        {new Date(c.end_time).toLocaleString()}
+                        {formatClassTime(c.start_time)}
                     </p>
                     </div>
                 ))}
