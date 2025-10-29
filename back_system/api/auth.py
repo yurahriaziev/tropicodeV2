@@ -39,7 +39,7 @@ def get_db():
 
 router = APIRouter(prefix='/auth')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/token')
-frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+frontend_url = os.getenv('FRONTEND_API', 'http://localhost:5173')
 
 def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(get_db)):
     try:
