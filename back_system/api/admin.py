@@ -17,7 +17,7 @@ import os
 import secrets
 
 LOG_DIR = os.path.join(os.path.dirname(__file__), "../core/logs/tropicode_api.log")
-frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+frontend_url = os.getenv('FRONTEND_API', 'http://localhost:5173')
 
 router = APIRouter(prefix='/admin')
 
