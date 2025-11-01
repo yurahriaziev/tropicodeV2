@@ -160,4 +160,22 @@ def get_classes(user:User=Depends(get_current_user), db:Session = Depends(get_db
     elif user.role == UserRole.STUDENT:
         classes = db.query(GoogleClass).filter(GoogleClass.student_id == user.id).all()
     return classes
+
+@router.delete("/classes/{class_id}", response_model=List[GoogleClassOut])
+def delete_class(class_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if user.role not in [UserRole.TUTOR]:
+        logger.warning(f"[CLASS] Unauthorized access attempt by user_id={user.id} ({user.role})")
+        raise HTTPException(status_code=403, detail='Unauthorized')
     
+    class_to_delete = db.query(GoogleClass).filter(GoogleClass.id == class_id, GoogleClass.tutor_id == user.id).first()
+
+    if not class_to_delete:
+        logger.warning(f"[CLASS] Class with id={class_id} not found to delete")
+        raise HTTPException(status_code=404, detail='Class not found')
+    
+    db.delete(class_to_delete)
+    db.commit()
+    logger.info(f"[CLASS] Class with id={class_id} successfully deleted by tutor with id={user.id}")
+
+    updated_classes = db.query(GoogleClass).filter(GoogleClass.tutor_id == user.id).all()
+    return updated_classes
