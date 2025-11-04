@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { API_URL } from "../config"
 
-export default function StudentCard({ student, setError }) {
+export default function StudentCard({ student, setError, onClassAdded }) {
     const [isFlipped, setIsFlipped] = useState(false)
     const [title, setTitle] = useState('')
     const [startTime, setStartTime] = useState('')
@@ -45,6 +45,8 @@ export default function StudentCard({ student, setError }) {
                 const classData = await classResponse.json()
                 console.log('Class created') // LOG
                 console.log(classData) // LOG
+
+                if (onClassAdded) onClassAdded()
             }
         } catch (error) {
             setError('Server error')

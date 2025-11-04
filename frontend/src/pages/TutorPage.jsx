@@ -15,10 +15,40 @@ export default function TutorPage() {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [students, setStudents] = useState([])
     const [googleConnected, setGoogleConnected] = useState(false)
+    const [classes, setClasses] = useState([])
+    const [loading, setLoading] = useState(true)
 
     const handleLogout = () => {
         localStorage.removeItem('token')
         navigate('/')
+    }
+
+    const fetchClasses = async() => {
+        try {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                setError('Not logged in')
+                return
+            }
+
+            const response = await fetch(`${API_URL}/classes`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            if (!response.ok) {
+                const data = await response.json()
+                return
+            }
+
+            const data = await response.json()
+            setClasses(data)
+        } catch (error) {
+            setError('Internal server error')
+        } finally {
+            setLoading(false)
+        }
     }
 
     useEffect(() => {
@@ -50,8 +80,8 @@ export default function TutorPage() {
             }
         }
 
-
         fetchTutor()
+        fetchClasses()
     }, [])
 
     const handleCreateStudent = async(student) => {
@@ -117,6 +147,16 @@ export default function TutorPage() {
         fetchStudents()
     }, [])
 
+    const sortClasses = (classes) => {
+        if (!Array.isArray(classes)) return []
+
+        return [...classes].sort((a, b) => {
+            const dateA = new Date(a.start_time)
+            const dateB = new Date(b.start_time)
+            return dateA - dateB
+        })
+    }
+
     return (
         <div className="page bg-gray-50 dark:bg-gray-900 min-h-screen">
             {error && (
@@ -144,7 +184,7 @@ export default function TutorPage() {
                     
                     {students.length > 0 ? (
                         students.map((student, index) => (
-                            <StudentCard key={index} student={student} setError={setError} />
+                            <StudentCard key={index} student={student} setError={setError} onClassAdded={fetchClasses} />
                         ))
                     ) : (
                         <div className="flex items-center justify-center h-full bg-white dark:bg-gray-800 p-6 shadow-md">
@@ -157,7 +197,7 @@ export default function TutorPage() {
                 <div className="col-span-4 row-span-5 col-start-3">
                     <div className="bg-white dark:bg-gray-800 p-6 shadow-md">
                         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Upcoming Classes</h3>
-                        <ClassList setError={setError} />
+                        <ClassList setError={setError} classes={sortClasses(classes)} loading={loading} refresh={fetchClasses} />
                         {/* <p className="text-gray-600 dark:text-gray-400">No upcoming classes scheduled</p> */}
                     </div>
                 </div>
