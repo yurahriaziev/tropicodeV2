@@ -45,7 +45,21 @@ export default function IslandMainDash() {
         <main className={`min-h-[calc(100vh-75px)] overflow-hidden bg-green-50 dark:bg-[#1f1d25]`}>
             <WelcomeBanner name={studentData.first} />
             <IslandActionBar activeTab={activeTab} setActiveTab={setActiveTab} />
-            <StudentClasses setError={setError} />
+            {activeTab === 'classes' ? (
+                <StudentClasses setError={setError} />
+            ) : activeTab === 'homework' ? (
+                <h3 className="text-white italic text-lg text-center mt-10">
+                    Coming soon...
+                </h3>
+            ) : activeTab === 'chat' ? (
+                <h3 className="text-white italic text-lg text-center mt-10">
+                    Coming soon...
+                </h3>
+            ) : activeTab === 'profile' ? (
+                <h3 className="text-white italic text-lg text-center mt-10">
+                    Coming soon...
+                </h3>
+            ) : null}
         </main>
     )
 }

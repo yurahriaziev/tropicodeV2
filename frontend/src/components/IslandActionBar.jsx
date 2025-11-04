@@ -2,8 +2,6 @@ import classesIcon from '../../public/images/elearning.png'
 import homeworkIcon from '../../public/images/web-programming.png'
 import chatIcon from '../../public/images/chat.png'
 import profileIcon from '../../public/images/profile.png'
-import { useState } from 'react';
-
 
 const ActionButton = ({ id, label, iconSrc, activeTab, setActiveTab }) => (
   <button

@@ -4,6 +4,7 @@ import { API_URL } from "../config";
 export default function StudentClasses({ setError }) {
   const [classes, setClasses] = useState([])
   const [loading, setLoading] = useState(true)
+  const [showPast, setShowPast] = useState(false)
   
   useEffect(() => {
     const fetchClasses = async() => {
@@ -75,14 +76,37 @@ export default function StudentClasses({ setError }) {
       </div>
       );
   } else {
+    const now = new Date()
+
+    const filteredClasses = classes
+      .filter((cls) => {
+        const start = new Date(cls.start_time);
+        return showPast ? start < now : start >= now;
+      })
+      .sort((a, b) => {
+        return showPast
+          ? new Date(b.start_time) - new Date(a.start_time)
+          : new Date(a.start_time) - new Date(b.start_time);
+      })
+
+
     return (
       <div className="px-16 py-10 text-white min-h-screen dark:bg-[#1f1d25]">
-        <h2 className="text-2xl font-semibold text-[#d6ff86] mb-8">
-          Your Upcoming Classes
-        </h2>
+        <div className="flex items-baseline gap-3 mb-8">
+          <h2 className="text-2xl font-semibold text-[#d6ff86]">
+            {showPast ? "Your Past Classes" : "Your Upcoming Classes"}
+          </h2>
+
+          <button
+            onClick={() => setShowPast(!showPast)}
+            className="text-sm text-gray-400 hover:text-[#d6ff86] transition font-medium mt-[2px]"
+          >
+            {showPast ? "View Upcoming Classes" : "View Past Classes"}
+          </button>
+        </div>
   
         <div className="flex flex-col gap-5">
-          {classes.map((cls) => (
+          {filteredClasses.map((cls) => (
             <div
               key={cls.id}
               className="flex items-center justify-between bg-[#22222a] border border-[#2e2e38] rounded-2xl p-6 hover:bg-[#2a2a34] transition"
