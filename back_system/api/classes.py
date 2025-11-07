@@ -147,7 +147,7 @@ def make_class(new_class: ClassCreate, user: User = Depends(get_current_user), d
             raise HTTPException(status_code=500, detail="Internal server error")
     except Exception as e:
         logger.error(f"[CLASS] Token decryption failed for user_id={user.id}: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        raise HTTPException(status_code=500, detail=f"Internal server error - {e}")
     
 @router.get("/classes", response_model=List[GoogleClassOut])
 def get_classes(user:User=Depends(get_current_user), db:Session = Depends(get_db)):
