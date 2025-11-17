@@ -80,8 +80,8 @@ export default function StudentClasses({ setError }) {
 
     const filteredClasses = classes
       .filter((cls) => {
-        const start = new Date(cls.start_time);
-        return showPast ? start < now : start >= now;
+        const end = new Date(cls.end_time);
+        return showPast ? end < now : end >= now;
       })
       .sort((a, b) => {
         return showPast
