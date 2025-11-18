@@ -196,7 +196,7 @@ export default function TutorPage() {
                 </div>
                 <div className="col-span-4 row-span-5 col-start-3">
                     <div className="bg-white dark:bg-gray-800 p-6 shadow-md">
-                        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Upcoming Classes</h3>
+                        {/* <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Upcoming Classes</h3> */}
                         <ClassList setError={setError} classes={sortClasses(classes)} loading={loading} refresh={fetchClasses} />
                         {/* <p className="text-gray-600 dark:text-gray-400">No upcoming classes scheduled</p> */}
                     </div>
