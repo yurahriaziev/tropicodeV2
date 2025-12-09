@@ -149,13 +149,15 @@ export default function LoginCard() {
                         </>
                     )}
 
-                    <button
-                        type="submit"
-                        className={`cursor-pointer w-full py-3 rounded-md font-medium text-white transition
-                        ${isStudent ? 'bg-purple-600 hover:bg-purple-700' : 'bg-green-600 hover:bg-green-700'}`}
-                    >
-                        Sign In as {isStudent ? 'Student' : 'Parent'}
-                    </button>
+                    {isStudent && (
+                        <button
+                            type="submit"
+                            className={`cursor-pointer w-full py-3 rounded-md font-medium text-white transition
+                            ${isStudent ? 'bg-purple-600 hover:bg-purple-700' : 'bg-green-600 hover:bg-green-700'}`}
+                        >
+                            Sign In as {isStudent ? 'Student' : 'Parent'}
+                        </button>
+                    )}
                 </form>
             </div>
 

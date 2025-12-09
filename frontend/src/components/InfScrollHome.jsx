@@ -24,11 +24,10 @@ const iconMap = {
 }
 
 export default function InfiniteScrollStrip({ items, duration = 60 }) {
-  const repeated = [...items, ...items] // duplicate JSX track 1:1
+  const repeated = [...items, ...items]
 
   return (
     <div className="relative overflow-hidden w-full py-8 bg-white">
-      {/* gradient fades */}
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-white to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-white to-transparent" />
 
