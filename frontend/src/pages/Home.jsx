@@ -25,7 +25,7 @@ export default function Home() {
     return (
         <>
             <Navbar />
-            <Hero />
+            <Hero/>
             <InfScrollHome items={["Python", "JavaScript", "ReactJS", "Flask", "Pygame", "Tinkercad", "3D Modeling", "Game Design", "Web Apps","2D Games"]} />
             <SkillSection id="courses" />
             <CallToAction />

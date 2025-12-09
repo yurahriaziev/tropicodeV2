@@ -1,6 +1,6 @@
 export default function Hero() {
     return (
-        <section className="relative bg-gradient-to-br from-purple-600 to-green-500 py-16 md:py-24">
+        <section id="home" className="scroll-mt-10 relative bg-gradient-to-br from-purple-600 to-green-500 py-16 md:py-24">
             <div className="absolute inset-0 opacity-10">
             <div className="absolute inset-0 bg-[url('/placeholder.svg?height=800&width=1600')] bg-cover bg-center" />
             </div>
