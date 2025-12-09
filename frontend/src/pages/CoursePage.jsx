@@ -10,28 +10,48 @@ export default function CoursePage() {
     // dummy data
     const courseData = {
         "programming": {
-          title: "Python & JavaScript Programming",
-          description:
-            "Master two of the most popular programming languages used in web development, data science, and more.",
-          skills: ["Loops", "Functions", "APIs", "Data Types"],
-          projects: ["Quiz App", "To-do List", "Weather App", "Calculator"],
-          languages: ["Python", "JavaScript"],
+            title: "Python & JavaScript Programming",
+            description:
+                "Master two of the most popular programming languages used in web development, data science, and more.",
+            skills: ["Loops", "Functions", "APIs", "Data Types"],
+            projects: ["Quiz App", "To-do List", "Weather App", "Calculator"],
+            languages: ["Python", "JavaScript"],
         },
         "reactjs-web-development": {
-          title: "Web Development with Flask & ReactJS",
-          description:
-            "Learn to build dynamic websites using modern tools and frameworks.",
-          skills: ["Flask", "React", "HTML", "CSS"],
-          projects: ["Blog Website", "Portfolio", "Recipe App", "Task Tracker"],
-          languages: ["Python", "JavaScript"],
+            title: "Web Development with Flask & ReactJS",
+            description:
+                "Learn to build dynamic websites using modern tools and frameworks.",
+            skills: ["Flask", "React", "HTML", "CSS"],
+            projects: ["Blog Website", "Portfolio", "Recipe App", "Task Tracker"],
+            languages: ["Python", "JavaScript"],
         },
         "3d-printing-design": {
-          title: "3D Printing & Modeling",
-          description:
-            "Turn digital models into real-world objects and explore the world of 3D design.",
-          skills: ["3D Modeling", "Design Thinking", "CAD", "Slicing"],
-          projects: ["Keychain", "Phone Stand", "Chess Piece", "Toy Car"],
-          languages: ["TinkerCAD", "Fusion 360"],
+            title: "3D Printing & Modeling",
+            description:
+                "Turn digital models into real-world objects and explore the world of 3D design.",
+            skills: ["3D Modeling", "Design Thinking", "CAD", "Slicing"],
+            projects: ["Keychain", "Phone Stand", "Chess Piece", "Toy Car"],
+            languages: ["TinkerCAD", "Fusion 360"],
+        },
+        "pygame-game-development": {
+            title: "Game Development with Python & Pygame",
+            description:
+            "Go from zero to advanced by building your own 2D games using Python and Pygame.",
+            skills: [
+            "Game Loops",
+            "Sprite Animation",
+            "Collision Detection",
+            "Input Handling",
+            "Level Design",
+            "Sound & Effects",
+            ],
+            projects: [
+            "Pong Clone",
+            "Space Shooter",
+            "Platformer",
+            "Top-Down Adventure Game",
+            ],
+            languages: ["Python", "Pygame"],
         }
     }
       

@@ -9,12 +9,14 @@ export default function SkillCard({ title, description, icon, topics = [], link 
   }
 
   return (
-      <div className="rounded-xl border border-purple-200 shadow-sm hover:shadow-md transition overflow-hidden">
+    <div className="rounded-xl border border-purple-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
+      
       <div className="bg-purple-50 py-6 flex justify-center text-3xl text-purple-600">
         {icon}
       </div>
 
-      <div className="p-6 flex flex-col gap-5 text-gray-800">
+      {/* Make content stretch & allow pushing Learn More to bottom */}
+      <div className="p-6 flex flex-col gap-5 text-gray-800 flex-1">
         <div>
           <h3 className="text-xl font-bold mb-1">{title}</h3>
           <p className="text-sm text-gray-600">{description}</p>
@@ -29,7 +31,8 @@ export default function SkillCard({ title, description, icon, topics = [], link 
           ))}
         </ul>
 
-        <div className='p-5'>
+        {/* Push this to the bottom of each card */}
+        <div className="mt-auto pt-4">
           <a
             onClick={() => handleNavigate(link)}
             className="cursor-pointer flex items-center text-purple-600 font-semibold text-sm hover:underline"
@@ -38,6 +41,8 @@ export default function SkillCard({ title, description, icon, topics = [], link 
           </a>
         </div>
       </div>
+
     </div>
   )
+
 }

@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import Hero from "../components/Hero";
 import Navbar from "../components/Navbar";
 import SkillSection from "../components/SkillSection";
+import InfScrollHome from "../components/InfScrollHome";
 
 export default function Home() {
     useEffect(() => {
@@ -25,6 +26,7 @@ export default function Home() {
         <>
             <Navbar />
             <Hero />
+            <InfScrollHome items={["Python", "JavaScript", "ReactJS", "Flask", "Pygame", "Tinkercad", "3D Modeling", "Game Design", "Web Apps","2D Games"]} />
             <SkillSection />
             <CallToAction />
             <ContactSection />
