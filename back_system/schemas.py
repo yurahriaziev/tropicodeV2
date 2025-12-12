@@ -67,3 +67,9 @@ class AdminActivityOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+class ContactCreate(BaseModel):
+    first: str
+    last: str
+    email: EmailStr
+    phone: str
