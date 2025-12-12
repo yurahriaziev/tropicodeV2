@@ -21,7 +21,7 @@ export default function Navbar() {
             if (el) {
             el.scrollIntoView({ behavior: "smooth" })
             }
-        }, 150)
+        }, 350)
     }
 
     useEffect(() => {
