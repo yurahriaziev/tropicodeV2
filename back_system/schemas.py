@@ -73,3 +73,13 @@ class ContactCreate(BaseModel):
     last: str
     email: EmailStr
     phone: str
+
+class ContactOut(BaseModel):
+    id: int
+    first: str
+    last: str
+    email: EmailStr
+    phone: str
+
+    class Config:
+        orm_mode = True

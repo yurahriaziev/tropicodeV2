@@ -3,10 +3,12 @@ from schemas import ContactCreate
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models.contact import Contact
+from core.logger import logger
 
-def create_contact(db: Session, contact: ContactCreate):
+def create_contact_service(db: Session, contact: ContactCreate):
+    print(contact)
     normalized_email = normalize_email(contact.email)
-    normalized_phone = normalize_email(contact.phone)
+    normalized_phone = normalize_phone(contact.phone)
 
     if db.query(Contact).filter(Contact.email == normalized_email).first():
         raise HTTPException(status_code=409, detail='Email already in use')
@@ -21,8 +23,11 @@ def create_contact(db: Session, contact: ContactCreate):
         phone = normalized_phone
     )
 
+    print(db_contact)
+
     db.add(db_contact)
     db.commit()
     db.refresh(db_contact)
 
+    logger.info(f"[USER_CONTACT] New contact added '{db_contact.first} {db_contact.last}'")
     return db_contact

@@ -10,6 +10,7 @@ import schemas
 from core.security import get_password_hash
 from core.logger import logger
 from .auth import get_current_user
+from services.user_service import create_contact_service
 
 router = APIRouter()
 
@@ -71,3 +72,13 @@ def get_users(db: Session=Depends(get_db)):
 @router.get('/users/me', response_model=schemas.UserOut, tags=['Users'])
 def me(user:User = Depends(get_current_user)):
     return user
+
+@router.post('/contacts', response_model=schemas.ContactOut, tags=['Users'])
+def create_contact(contact: schemas.ContactCreate, db: Session = Depends(get_db)):
+    try:
+        return create_contact_service(db, contact)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except:
+        raise
+        
