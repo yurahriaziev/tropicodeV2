@@ -13,14 +13,17 @@ def create_contact_service(db: Session, contact: ContactCreate):
     if db.query(Contact).filter(Contact.email == normalized_email).first():
         raise HTTPException(status_code=409, detail='Email already in use')
     
-    if db.query(Contact).filter(Contact.phone == normalized_phone).first():
-        raise HTTPException(status_code=409, detail='Phone already in use')
+    if normalized_phone:
+        if db.query(Contact).filter(Contact.phone == normalized_phone).first():
+            raise HTTPException(status_code=409, detail='Phone already in use')
     
     db_contact = Contact(
         first = contact.first.strip(),
         last = contact.last.strip(),
         email = normalized_email,
-        phone = normalized_phone
+        phone = normalized_phone,
+        child_age = contact.child_age,
+        source = contact.source
     )
 
     print(db_contact)

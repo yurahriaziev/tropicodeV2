@@ -72,14 +72,18 @@ class ContactCreate(BaseModel):
     first: str
     last: str
     email: EmailStr
-    phone: str
+    phone: Optional[str] = None
+    child_age: int
+    source: str
 
 class ContactOut(BaseModel):
     id: int
     first: str
     last: str
     email: EmailStr
-    phone: str
+    phone: Optional[str] = None
+    child_age: int
+    source: str
 
     class Config:
         orm_mode = True
