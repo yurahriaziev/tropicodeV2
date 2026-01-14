@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import { API_URL } from "../config"
 import { Users, UserCheck, GraduationCap } from "lucide-react";
+import LeadStatsRow from "./LeadStatsRow";
+import LeadOriginCard from "./LeadOriginCard";
+import LeadContactInfoTable from "./LeadContactInfoTable";
 
 export default function AdminDashboard() {
     const [error, setError] = useState('')
@@ -76,6 +79,13 @@ export default function AdminDashboard() {
                     value={stats.total_students}
                     icon={<GraduationCap className="h-6 w-6 text-gray-300" />}
                 />
+            </div>
+
+            <LeadStatsRow setError={setError} />
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <LeadOriginCard setError={setError} />
+                <LeadContactInfoTable setError={setError} />
             </div>
         </>
     )

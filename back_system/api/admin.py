@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from core.logger import logger
 from core.admin_logger import log_admin_action
 from .auth import get_admin_user
-from schemas import AdminActivityOut
+from schemas import AdminActivityOut, ContactOut
 
 from models.user import UserRole, User
-from models import AdminActivity
+from models import AdminActivity, Contact
 from schemas import UserCreate
 from typing import List
 
@@ -73,3 +73,30 @@ def generate_onboarding_link(admin: User = Depends(get_admin_user), db: Session 
     logger.info(f"[ADMIN] user_id={admin.id} | route=/api/admin/onboarding-link | action=Generated tutor link")
 
     return {'invite_link': tutor_link}
+
+@router.get('/leads/stats', tags=['Admin'])
+def get_lead_stats(admin: User = Depends(get_admin_user), db: Session = Depends(get_db)):
+    leads = db.query(Contact).count()
+
+    return {'total':leads, 'open':0, 'sold':0, 'lost':0, 'conversion_rate':0}
+
+@router.get('/leads/origins', tags=['Admin'])
+def get_origins(admin: User = Depends(get_admin_user), db: Session = Depends(get_db)):
+    general = db.query(Contact).filter(Contact.source == 'general').count()
+    reactjs = db.query(Contact).filter(Contact.source == 'reactjs_web_development_course').count()
+    programming = db.query(Contact).filter(Contact.source == 'programming_course').count()
+    _3dprinting = db.query(Contact).filter(Contact.source == '3d_printing_design_course').count()
+    pygame = db.query(Contact).filter(Contact.source == 'pygame_game_development_course').count()
+
+    return {
+        "general": general,
+        "programming_course": reactjs,
+        "reactjs_web_development_course": programming,
+        "3d_printing_design_course": _3dprinting,
+        "pygame_game_development_course": pygame
+    }
+
+@router.get('/leads/info', tags=['Admin'], response_model=List[ContactOut])
+def get_leads_info(admin: User = Depends(get_admin_user), db: Session = Depends(get_db)):
+    leads = db.query(Contact).order_by(Contact.created_at.desc()).all()
+    return leads
