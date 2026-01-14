@@ -39,6 +39,7 @@ export default function LeadOriginCard({ setError }) {
                 }
 
                 const raw = await response.json()
+                console.log('Raw', raw)
 
                 const formatted = Object.entries(raw).map(([key, value]) => ({
                     origin: ORIGIN_LABELS[key] ?? key,
@@ -46,6 +47,7 @@ export default function LeadOriginCard({ setError }) {
                 }))
 
                 setData(formatted)
+                console.log(formatted)
             } catch (error) {
                 console.log(error) // LOG
                 setError(error)
@@ -66,58 +68,61 @@ export default function LeadOriginCard({ setError }) {
     }
 
     return (
-    <div className="rounded-xl bg-gray-900 dark:bg-gray-800 border border-gray-700 shadow-md p-5 h-[360px] flex flex-col">
-        <h3 className="text-white text-base font-semibold leading-none">
-            Lead Origin
-        </h3>
+        <div className="rounded-xl bg-gray-900 dark:bg-gray-800 border border-gray-700 shadow-md p-5 h-[360px] flex flex-col outline-none focus:outline-none focus-visible:outline-none">
+            <h3 className="text-white text-base font-semibold leading-none">
+                Lead Origin
+            </h3>
 
-        <div className="relative h-[280px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-                data={data}
-                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                barCategoryGap="35%"
-            >
-                <CartesianGrid stroke="#374151" strokeDasharray="4 4" vertical={false} />
+                <div
+                className="relative h-[280px] w-full outline-none focus:outline-none focus-visible:outline-none"
+                tabIndex={-1}
+                >
+                <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                    data={data}
+                    margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                    barCategoryGap="35%"
+                >
+                    <CartesianGrid stroke="#374151" strokeDasharray="4 4" vertical={false} />
 
-                <XAxis
-                dataKey="origin"
-                stroke="#9CA3AF"
-                tickLine={false}
-                axisLine={false}
-                tick={{ fontSize: 12 }}
-                />
+                    <XAxis
+                    dataKey="origin"
+                    stroke="#9CA3AF"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fontSize: 12 }}
+                    />
 
-                <YAxis
-                stroke="#9CA3AF"
-                tickLine={false}
-                axisLine={false}
-                allowDecimals={false}
-                tick={{ fontSize: 12 }}
-                domain={[0, "dataMax + 1"]}
-                />
+                    <YAxis
+                    stroke="#9CA3AF"
+                    tickLine={false}
+                    axisLine={false}
+                    allowDecimals={false}
+                    tick={{ fontSize: 12 }}
+                    domain={[0, "dataMax + 1"]}
+                    />
 
-                <Tooltip
-                cursor={false}
-                contentStyle={{
-                    backgroundColor: "#111827",
-                    border: "1px solid #374151",
-                    borderRadius: "0.5rem",
-                    color: "#fff",
-                    fontSize: "12px",
-                }}
-                />
+                    <Tooltip
+                    cursor={false}
+                    contentStyle={{
+                        backgroundColor: "#111827",
+                        border: "1px solid #374151",
+                        borderRadius: "0.5rem",
+                        color: "#fff",
+                        fontSize: "12px",
+                    }}
+                    />
 
-                <Bar
-                dataKey="count"
-                fill="#8B5CF6"
-                radius={[6, 6, 0, 0]}
-                barSize={36}
-                isAnimationActive={false}
-                />
-            </BarChart>
-            </ResponsiveContainer>
+                    <Bar
+                    dataKey="count"
+                    fill="#8B5CF6"
+                    radius={[6, 6, 0, 0]}
+                    barSize={36}
+                    isAnimationActive={false}
+                    />
+                </BarChart>
+                </ResponsiveContainer>
+            </div>
         </div>
-    </div>
     )
 }

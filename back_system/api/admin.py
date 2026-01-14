@@ -90,8 +90,8 @@ def get_origins(admin: User = Depends(get_admin_user), db: Session = Depends(get
 
     return {
         "general": general,
-        "programming_course": reactjs,
-        "reactjs_web_development_course": programming,
+        "programming_course": programming,
+        "reactjs_web_development_course": reactjs,
         "3d_printing_design_course": _3dprinting,
         "pygame_game_development_course": pygame
     }
