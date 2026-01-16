@@ -39,7 +39,6 @@ export default function LeadOriginCard({ setError }) {
                 }
 
                 const raw = await response.json()
-                console.log('Raw', raw)
 
                 const formatted = Object.entries(raw).map(([key, value]) => ({
                     origin: ORIGIN_LABELS[key] ?? key,
@@ -47,7 +46,6 @@ export default function LeadOriginCard({ setError }) {
                 }))
 
                 setData(formatted)
-                console.log(formatted)
             } catch (error) {
                 console.log(error) // LOG
                 setError(error)

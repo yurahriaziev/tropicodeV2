@@ -100,3 +100,20 @@ def get_origins(admin: User = Depends(get_admin_user), db: Session = Depends(get
 def get_leads_info(admin: User = Depends(get_admin_user), db: Session = Depends(get_db)):
     leads = db.query(Contact).order_by(Contact.created_at.desc()).all()
     return leads
+
+@router.delete('/leads/{lead_id}', tags=['Admin'])
+def delete_lead(lead_id:int, admin: User = Depends(get_admin_user), db: Session = Depends(get_db)):
+    if not lead_id:
+        raise HTTPException(status_code=400, detail='Missing lead information')
+    
+    lead = db.query(Contact).filter(Contact.id == lead_id).first()
+
+    if not lead:
+        logger.warning(f"[LEAD] Attempted to delete lead with lead_id={lead_id}. Lead not found ({admin.role})")
+        raise HTTPException(status_code=404, detail=f'Lead with ID: {lead_id} was not found')
+    
+    db.delete(lead)
+    db.commit()
+    logger.info(f"[LEAD] Lead with id={lead_id} successfully deleted by admin with id={admin.id}")
+
+    return {'success': True}
