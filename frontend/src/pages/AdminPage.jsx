@@ -88,19 +88,20 @@ export default function AdminPage() {
             {activeTab === "logs" && (
               <>
                 <p className="my-4">Logs</p>
-                <p className="">Comming soon...</p>
+                <p className="text-sm">Coming soon...</p>
                 {/* <AdminLogs /> */}
               </>
             )}
             {activeTab === "messages" && (
               <>
                 <p className="my-4">Messages</p>
-                <p className="">Comming soon...</p>
+                <p className="text-sm">Coming soon...</p>
               </>
             )}
             {activeTab === "newAccount" && (
               <>
                 <p className="my-4">New user</p>
+                <p className="text-sm">Coming soon...</p>
               </>
             )}
             {activeTab === "generateLink" && (
