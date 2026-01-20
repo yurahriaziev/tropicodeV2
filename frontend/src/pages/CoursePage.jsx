@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import { useParams } from "react-router-dom";
 import { FaClipboardList, FaCloudSun, FaCalculator, FaBlogger, FaLaptopCode, FaUtensils, FaMobileAlt, FaCubes, FaChess, FaCodeBranch, FaDatabase } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { API_URL, GAMEDEV, MODELING, PROGRAMMING, WEBDEV } from "../config";
+import { API_URL, GAMEDEV, MODELING, PROGRAMMING, UNITYDEV, WEBDEV } from "../config";
 
 export default function CoursePage() {
     const { courseName } = useParams();
@@ -67,6 +67,26 @@ export default function CoursePage() {
             ],
             languages: ["Python", "Pygame"],
             source: GAMEDEV
+        },
+        "unity-game-development": {
+            title: "Game Development with Unity",
+            description:
+                "Design and build immersive 2D and 3D games using Unity and C#, from core mechanics to polished gameplay.",
+            skills: [
+                "Game Objects & Components",
+                "C# Scripting",
+                "Physics & Collisions",
+                "UI Systems",
+                "Level Design",
+            ],
+            projects: [
+                "2D Platformer",
+                "3D Obstacle Course",
+                "Endless Runner",
+                "Mini RPG Game",
+            ],
+            languages: ["C#", "Unity"],
+            source: UNITYDEV
         }
     }
       

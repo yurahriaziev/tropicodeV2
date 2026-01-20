@@ -1,5 +1,5 @@
 import SkillCard from './SkillCard';
-import { FaLaptopCode, FaCode, FaCubes, FaGamepad } from 'react-icons/fa';
+import { FaLaptopCode, FaCode, FaCubes, FaGamepad, FaUnity } from 'react-icons/fa';
 
 export default function SkillSection() {
     return (
@@ -13,7 +13,7 @@ export default function SkillSection() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                     <SkillCard
                         title="Programming"
                         description="Learn Python, JavaScript, and coding fundamentals through interactive projects."
@@ -41,6 +41,13 @@ export default function SkillSection() {
                         icon={<span className="text-3xl">{<FaGamepad />}</span>}
                         topics={['Sprites', 'Collisions', 'Level Design']}
                         link="/course/pygame-game-development"
+                    />
+                    <SkillCard
+                        title="Unity Game Development"
+                        description="Create immersive 2D and 3D games using Unity and C#."
+                        icon={<span className="text-3xl"><FaUnity /></span>}
+                        topics={['C# Scripting', 'Game Objects', 'Physics', 'Level Design']}
+                        link="/course/unity-game-development"
                     />
                 </div>
             </div>
